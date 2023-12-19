@@ -1,7 +1,7 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input
-from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, show_birthday, \
-    get_birthdays_per_week
+from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
+    show_birthday, get_birthdays_per_week, search
 from cli.models.address_book import AddressBook
 
 
@@ -32,19 +32,21 @@ def main():
         elif command == "hello":
             print("Hi! How can I help you?")
         elif command == "add":
-            print(add_contact(args, book))
+            print(add_contact(args, book=book))
         elif command == "change":
-            print(change_contact(args, book))
+            print(change_contact(args, book=book))
         elif command == "phone":
-            print(get_phone(args, book))
+            print(get_phone(args, book=book))
         elif command == "all":
             print(get_all_contacts(book))
         elif command == "add-birthday":
-            print(add_birthday(args, book))
+            print(add_birthday(args, book=book))
         elif command == "show-birthday":
-            print(show_birthday(args, book))
+            print(show_birthday(args, book=book))
         elif command == "birthdays":
             print(get_birthdays_per_week(book))
+        elif command == "search":
+            print(search(args, book=book))
         else:
             print("Invalid command.")
 

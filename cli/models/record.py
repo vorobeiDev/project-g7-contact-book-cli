@@ -46,6 +46,14 @@ class Record:
         self.phones = []
         self.birthday = None
 
+    def __iter__(self):
+        yield "name", self.name.value
+        yield "phones", [phone.value for phone in self.phones]
+        yield "birthday", self.birthday.value if self.birthday else None
+
+    def to_dict(self):
+        return dict(self)
+
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
 
@@ -73,3 +81,6 @@ class Record:
                 f"phones: {', '.join(p.value for p in self.phones)}; " +
                 f"{birthday}"
                 )
+
+    def __repr__(self):
+        return self.__str__()

@@ -22,3 +22,11 @@ class PhoneValidationError(Exception):
 
 class BirthdayValidationError(Exception):
     pass
+
+
+class SearchParamAreIncorrectError(Exception):
+    pass
+
+
+class NoMatchesFoundError(Exception):
+    pass
