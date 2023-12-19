@@ -1,6 +1,6 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input
-from cli.services.commands import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, show_birthday, \
+from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, show_birthday, \
     get_birthdays_per_week
 from cli.models.address_book import AddressBook
 
