@@ -28,28 +28,28 @@ def main():
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
-            print("Good bye!")
+            rprint("Good bye!")
             break
         elif command == "hello":
-            print("Hi! How can I help you?")
+            rprint("Hi! How can I help you?")
         elif command == "add":
-            print(add_contact(args, book=book))
+            rprint(add_contact(args, book=book))
         elif command == "change":
-            print(change_contact(args, book=book))
+            rprint(change_contact(args, book=book))
         elif command == "phone":
-            print(get_phone(args, book=book))
+            rprint(get_phone(args, book=book))
         elif command == "all":
-            print(get_all_contacts(book))
+            rprint(get_all_contacts(book))
         elif command == "add-birthday":
-            print(add_birthday(args, book=book))
+            rprint(add_birthday(args, book=book))
         elif command == "show-birthday":
-            print(show_birthday(args, book=book))
+            rprint(show_birthday(args, book=book))
         elif command == "birthdays":
-            print(get_birthdays_per_week(book))
+            rprint(get_birthdays_per_week(book))
         elif command == "search":
-            print(search(args, book=book))
+            rprint(search(args, book=book))
         else:
-            print("Invalid command.")
+            rprint("Invalid command.")
 
         write_contacts_to_file("book.pkl", book)
 
