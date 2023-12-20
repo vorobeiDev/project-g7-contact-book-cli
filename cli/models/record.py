@@ -15,6 +15,8 @@ class Field:
 class Name(Field):
     pass
 
+class Email(Field):
+    pass
 
 class Phone(Field):
     def __init__(self, value):
@@ -45,7 +47,7 @@ class Record:
         self.name = Name(name)
         self.phones = []
         self.birthday = None
-
+        
     def __iter__(self):
         yield "name", self.name.value
         yield "phones", [phone.value for phone in self.phones]
@@ -71,6 +73,15 @@ class Record:
             if p.value == phone:
                 return p
         return None
+
+    def change_birthday(self, birthday):
+       self.birthday = Birthday(birthday)
+
+    def change_email(self, email):
+        self.email = Email(email)
+
+    def change_name(self, new_name):
+        self.name = Name(new_name)
 
     def add_birthday(self, date):
         self.birthday = Birthday(date)

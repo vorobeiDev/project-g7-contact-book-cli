@@ -1,7 +1,7 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input
 from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
-    show_birthday, get_birthdays_per_week, search, delete_contact
+    show_birthday, get_birthdays_per_week, search, delete_contact, change_birthday, change_email, change_name
 from cli.models.address_book import AddressBook
 
 
@@ -19,6 +19,9 @@ def main():
         'phone <name>' - get all phone numbers in the contact
         'all' - get all contacts
         'add-birthday <name> <birthday_date>' - adds a birthday
+        'change-birthday <name> <new_birthday_date>' - change birthday, format of date <dd.mm.YYYY>
+        'change-name <name> <new_name>' - change name
+        'change-email <name> <mail>' - change email
         'show-birthday <name>' - shows a birthday
         'delete <name>' - delete contact from the contact
         'search <search_query>' - for searching information in the contact
@@ -51,6 +54,12 @@ def main():
             print(search(args, book=book))
         elif command == "delete":
             print(delete_contact(args, book=book))
+        elif command == "change-birthday":
+            print(change_birthday(args, book=book))
+        elif command == "change-email":
+            print(change_email(args, book=book))
+        elif command == "change-name":
+            print(change_name(args, book=book))    
         else:
             print("Invalid command.")
 

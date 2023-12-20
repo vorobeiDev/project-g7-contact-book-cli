@@ -36,6 +36,45 @@ def change_contact(args, book: AddressBook):
     contact.edit_phone(old_phone=old_phone, new_phone=phone)
     return "Contact changed."
 
+@error_handler
+def change_name(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'change-name <name> <new_name>' command for changing name.") 
+    name, new_name = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+        
+    if name == new_name:
+        raise IncorrectArgumentsQuantityError("The name and new name are the same. Use different new name. New name must be different.")
+    contact.change_name(new_name)
+    book.add_record(contact)
+    book.delete(name)
+    
+    return f"Contact {name} was changed on {new_name}."
+
+@error_handler
+def change_birthday(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'change-birthday <name> <new birthday date>' command for changing birthday.")
+    name, birthday = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.change_birthday(birthday)
+    return f"Birthday for {name} was changed."
+
+
+@error_handler
+def change_email(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'change-email <name> <email>' command for changing email.")
+    name, email = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.change_email(email)
+    return f"Email for {name} was changed."
 
 @error_handler
 def get_phone(args, book: AddressBook):
