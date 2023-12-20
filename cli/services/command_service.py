@@ -4,8 +4,10 @@ from collections import defaultdict
 from cli.models.address_book import AddressBook
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
-from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError
+from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
+    SearchParamAreIncorrectError, NoMatchesFoundError
 from cli.models.record import Record
+from cli.utils.helpers import is_match
 
 
 @error_handler
@@ -110,3 +112,22 @@ def get_birthdays_per_week(book: AddressBook):
     for day in WEEKDAYS:
         if birthdays[day]:
             return f"{day}: {', '.join((birthdays[day]))}"
+
+
+@error_handler
+def search(args, book: AddressBook):
+    records = book.find_all()
+
+    if len(records) == 0:
+        raise ContactsAreEmptyError
+
+    if len(args) != 1:
+        raise SearchParamAreIncorrectError
+
+    query = args[0].lower()
+    result = {record for name, record in records if is_match(record, query)}
+
+    if len(result) == 0:
+        raise NoMatchesFoundError
+
+    return '\n'.join(str(record) for record in result)
