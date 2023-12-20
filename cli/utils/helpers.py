@@ -1,3 +1,5 @@
+from time import sleep
+
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
@@ -21,3 +23,6 @@ def is_match(record, query):
             return True
 
     return False
+
+def process_data():
+    sleep(0.002)
