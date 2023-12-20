@@ -55,10 +55,10 @@ def main():
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
-            print("Good bye!")
+            rprint("Good bye!")
             break
         elif command == "hello":
-            print("Hi! How can I help you?")
+            rprint("Hi! How can I help you?")
         elif command == "add":
             print(add_contact(args, book=book))
         elif command == "add-phone":
@@ -68,17 +68,19 @@ def main():
         elif command == "add-address":
             print(add_address(args, book=book))
         elif command == "add-email":
-            print(add_email(args, book=book))
+            rprint(add_contact(args, book=book))
         elif command == "change":
-            print(change_contact(args, book=book))
+            rprint(change_contact(args, book=book))
         elif command == "phone":
-            print(get_phone(args, book=book))
+            rprint(get_phone(args, book=book))
         elif command == "all":
-            print(get_all_contacts(book))
+            rprint(get_all_contacts(book))
+        elif command == "add-birthday":
+            rprint(add_birthday(args, book=book))
         elif command == "show-birthday":
-            print(show_birthday(args, book=book))
+            rprint(show_birthday(args, book=book))
         elif command == "birthdays":
-            print(get_birthdays(book=book, days_in_advance=args[0] if args else None))
+            rprint(get_birthdays(book=book, days_in_advance=args[0] if args else None))
         elif command == "search":
             print(search(args, book=book))
         elif command == "delete":
@@ -96,9 +98,11 @@ def main():
         elif command == "edit-note":
             print(edit_note(args, notebook=notebook))
         elif command == "delete-note":
-            print(delete_note(args, notebook=notebook))
+            rprint(delete_note(args, notebook=notebook))
+        elif command == "search":
+            rprint(search(args, book=book))
         else:
-            print("Invalid command.")
+            rprint("Invalid command.")
 
         write_data_to_file("book.pkl", book)
         write_data_to_file("notebook.pkl", notebook)
