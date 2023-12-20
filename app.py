@@ -1,9 +1,10 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
-from cli.utils.helpers import parse_input
+from cli.utils.helpers import parse_input, process_data
 from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
     show_birthday, get_birthdays_per_week, search
 from cli.models.address_book import AddressBook
 from rich import print as rprint
+from rich.progress import track
 
 
 def main():
@@ -26,6 +27,9 @@ def main():
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
+
+        for _ in track(range(100), description='[green]Processing your request'):
+            process_data()
 
         if command in ["close", "exit"]:
             rprint("Good bye!")
