@@ -3,6 +3,7 @@ from cli.utils.helpers import parse_input
 from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
     show_birthday, get_birthdays_per_week, search
 from cli.models.address_book import AddressBook
+from rich import print as rprint
 
 
 def main():
@@ -10,8 +11,8 @@ def main():
     book_from_file = read_contacts_from_file("book.pkl")
     if book_from_file is not None:
         book = book_from_file
-    print("Welcome to the assistant bot!")
-    print("""
+    rprint("Welcome to the assistant bot!")
+    rprint("""
         Command list:
         'hello' - shows hello message
         'add <name> <phone>' - adds a new contact.
