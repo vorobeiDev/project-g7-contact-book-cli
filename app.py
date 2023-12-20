@@ -8,6 +8,7 @@ from cli.services.file_service import write_data_to_file, read_data_from_file
 from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
 
 from cli.utils.helpers import parse_input
+from rich import print as rprint
 
 
 def main():
@@ -18,11 +19,8 @@ def main():
 
     if book_from_file is not None:
         book = book_from_file
-    if notebook_from_file is not None:
-        notebook = notebook_from_file
-
-    print("Welcome to the assistant bot!")
-    print("""
+    rprint("Welcome to the assistant bot!")
+    rprint("""
         Command list:
         'hello' - shows hello message
         ---

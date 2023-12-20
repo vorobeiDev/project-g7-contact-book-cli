@@ -114,3 +114,7 @@ app/g7cli.exe
 
 ## Additional Information
 The program automatically saves your contacts in book.pkl and notes in notebook.pkl for future use.
+## Team Project - G7
+
+pip install Rich
+python -m rich
