@@ -20,7 +20,8 @@ def main():
         'all' - get all contacts
         'add-birthday <name> <birthday_date>' - adds a birthday
         'show-birthday <name>' - shows a birthday
-        'delete <name>' - delete contact from AddressBook
+        'delete <name>' - delete contact from the contact
+        'search <search_query>' - for searching information in the contact
         'exit' or 'close' - closes the app
     """)
     while True:
