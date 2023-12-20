@@ -1,6 +1,6 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input, process_data
-from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
+from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts_object, get_content, add_birthday, \
     show_birthday, get_birthdays_per_week, search
 from cli.models.address_book import AddressBook
 from cli.models.notebook import Notebook
@@ -12,8 +12,12 @@ from cli.services.file_service import write_data_to_file, read_data_from_file
 from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
 
 from cli.utils.helpers import parse_input
+
 from rich import print as rprint
 from rich.progress import track
+from rich.console import Console
+from rich.columns import Columns
+from rich.panel import Panel
 
 
 def main():
@@ -82,7 +86,10 @@ def main():
         elif command == "phone":
             rprint(get_phone(args, book=book))
         elif command == "all":
-            rprint(get_all_contacts(book))
+            console = Console()
+            users = get_all_contacts_object(book)
+            user_renderables = [Panel(get_content(user), expand=True) for user in users]
+            console.print(Columns(user_renderables))
         elif command == "add-birthday":
             rprint(add_birthday(args, book=book))
         elif command == "show-birthday":
