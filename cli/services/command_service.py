@@ -81,6 +81,42 @@ def show_birthday(args, book: AddressBook):
         raise ContactNotFoundError
     return f"{name} was born in {contact.birthday}"
 
+# Додано нову функцію add_note для обробки команди додавання нотатки. Вбудовано обробку помилок з використанням декоратора error_handler
+@error_handler
+def add_note(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To add a new note use 'add-note <name> <note>' command.")
+    name, note = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.add_note(note=note)
+    return "Note added."
+
+# Додано нову функцію change_note для обробки команди зміни нотатки. Вбудовано обробку помилок з використанням декоратора error_handler
+@error_handler
+def change_note(args, book: AddressBook):
+    if len(args) != 3:
+        raise IncorrectArgumentsQuantityError("Use 'change-note <name> <old_note> <new_note>' command for changing a note.")
+    name, old_note, new_note = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.edit_note(old_note=old_note, new_note=new_note)
+    return "Note changed."
+
+# Додано нову функцію delete_note для обробки команди видвлення нотатки. Вбудовано обробку помилок з використанням декоратора error_handler
+@error_handler
+def delete_note(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'delete-note <name> <note>' command for deleting a note.")
+    name, note = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.remove_note(note=note)
+    return "Note deleted."
+
 
 @error_handler
 def get_birthdays_per_week(book: AddressBook):

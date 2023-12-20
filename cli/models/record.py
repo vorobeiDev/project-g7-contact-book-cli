@@ -38,6 +38,15 @@ class Birthday(Field):
     @staticmethod
     def validate(date):
         return len(date) == 10 and datetime.strptime(date, BIRTHDAYS_DATE_FORMAT)
+    
+# Додано клас Note. Його ведено для подання нотатки, пов'язаної з контактом, успадковується від існуючого класу Field.
+class Note(Field):
+    def __init__(self, value):
+        super().__init__(value)
+
+# Додано виняток NoteNotFoundError, він виникає при спробі виконати операцію з неіснуючою нотаткою.
+class NoteNotFoundError(Exception):
+    pass
 
 
 class Record:
@@ -45,6 +54,8 @@ class Record:
         self.name = Name(name)
         self.phones = []
         self.birthday = None
+        # Додано атрибут нотаток для збереження списку нотаток, пов'язаних із контактом
+        self.notes = []
 
     def __iter__(self):
         yield "name", self.name.value
@@ -75,11 +86,37 @@ class Record:
     def add_birthday(self, date):
         self.birthday = Birthday(date)
 
+    # Додані методи (add_note, remove_note, edit_note, find_note) для виконання операцій над нотатками
+    def add_note(self, note):
+        self.notes.append(Note(note))
+
+    def remove_note(self, note):
+        if note in [n.value for n in self.notes]:
+            self.notes = [n for n in self.notes if n.value != note]
+        else:
+            raise NoteNotFoundError(f"Note with name '{note}' not found.")
+
+    def edit_note(self, old_note, new_note):
+        for note in self.notes:
+            if note.value == old_note:
+                note.value = new_note
+                break
+        else:
+            raise NoteNotFoundError(f"Note with name '{old_note}' not found.")
+
+    def find_note(self, note):
+        for n in self.notes:
+            if n.value == note:
+                return n
+        return None
+
+    # Оновлено метод __str__, який включає відображення нотаток під час друку контакту
     def __str__(self):
         birthday = f"Birthday: {self.birthday}" if self.birthday is not None else ""
+        notes = f"Notes: {', '.join(note.value for note in self.notes)}" if self.notes else ""
         return (f"Contact name: {self.name.value}; "
                 f"phones: {', '.join(p.value for p in self.phones)}; " +
-                f"{birthday}"
+                f"{birthday} {notes}"
                 )
 
     def __repr__(self):

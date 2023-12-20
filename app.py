@@ -1,7 +1,7 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input
 from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
-    show_birthday, get_birthdays_per_week, search
+    show_birthday, get_birthdays_per_week, search, add_note, change_note, delete_note
 from cli.models.address_book import AddressBook
 
 
@@ -45,6 +45,15 @@ def main():
             print(show_birthday(args, book=book))
         elif command == "birthdays":
             print(get_birthdays_per_week(book))
+        # Оновлено основний цикл в функції main. Змінено цикл обробки нових команд add-note, change-note та delete-note. Тепер користувачі можуть використовувати такі команди: add-note <ім'я> <нотатка>: додає до контакту нову нотатку із зазначеним ім'ям.
+        elif command == "add-note":
+            print(add_note(args, book))
+        # change-note <ім'я> <стара_нотатка> <нова_нотатка>: змінює існуючу нотатку, пов'язану до контакту
+        elif command == "change-note":
+            print(change_note(args, book))
+        # delete-note <ім'я> <нотатка>: видаляє нотатку, пов'язану з контактом
+        elif command == "delete-note":
+            print(delete_note(args, book))
         elif command == "search":
             print(search(args, book=book))
         else:
