@@ -5,7 +5,7 @@ from cli.models.address_book import AddressBook
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError
+    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError, ContactNotFoundAddressBook
 from cli.models.record import Record
 from cli.utils.helpers import is_match, parse_contact_input
 
@@ -197,3 +197,15 @@ def search(args, book: AddressBook):
         raise NoMatchesFoundError
 
     return '\n'.join(str(record) for record in result)
+
+
+@error_handler
+def delete_contact(args, book: AddressBook):
+    name = args[0]
+    # TODO: Add input with question "Do you want to delete contact? (yes/no)"
+    if name in book.keys():
+        book.delete(name)
+        return f"Contact {name} was deleted!"
+    raise ContactNotFoundAddressBook
+
+

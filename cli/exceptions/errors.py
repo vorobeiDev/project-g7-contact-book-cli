@@ -36,3 +36,6 @@ class SearchParamAreIncorrectError(Exception):
 
 class NoMatchesFoundError(Exception):
     pass
+
+class ContactNotFoundAddressBook(Exception):
+    pass
