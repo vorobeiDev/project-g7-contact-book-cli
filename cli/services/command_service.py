@@ -69,7 +69,6 @@ def get_content(contact):
     # Split the value string based on the delimiter ';'
     parts = value.split(';')
     
-
     # Initialize variables to store extracted keys and values
     contact_name = None
     phones = None
@@ -80,7 +79,6 @@ def get_content(contact):
     for part in parts:
         # Split each part into key and value based on the ':'
         key_value = part.split(':')
-        print(key_value)
         
         # Clean up whitespace and assign the key-value pairs accordingly
         if len(key_value) == 2:
