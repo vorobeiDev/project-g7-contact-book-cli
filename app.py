@@ -1,7 +1,8 @@
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input
 from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
-    show_birthday, get_birthdays_per_week, search, delete_contact
+    show_birthday, search, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
+    add_email, add_address, add_phone
 from cli.models.address_book import AddressBook
 
 
@@ -14,14 +15,26 @@ def main():
     print("""
         Command list:
         'hello' - shows hello message
-        'add <name> <phone>' - adds a new contact.
+        ---
+        'add <name>' - adds a new contact. Arguments birthday, address and email are not required.
+        'add-phone <name> <phone>' - adds a new phone number
+        'add-birthday <name> <birthday_date>' - adds a birthday
+        'add-address <name> <address>' - adds an address
+        'add-email <name> <email>' - adds an email
+        ---
         'change <name> <old_phone> <phone>' - changes a phone number in the contact
+        'change-birthday <name> <new_birthday_date>' - change birthday, format of date <dd.mm.YYYY>
+        'change-name <name> <new_name>' - change name
+        'change-email <name> <mail>' - change email
+        ---
         'phone <name>' - get all phone numbers in the contact
         'all' - get all contacts
-        'add-birthday <name> <birthday_date>' - adds a birthday
+        'birthdays <days_in_advance>' - shows all birthdays in the next days in advance. <days_in_advance> is not required.
         'show-birthday <name>' - shows a birthday
+        ---
         'delete <name>' - delete contact from the contact
         'search <search_query>' - for searching information in the contact
+        ---
         'exit' or 'close' - closes the app
     """)
     while True:
@@ -35,22 +48,34 @@ def main():
             print("Hi! How can I help you?")
         elif command == "add":
             print(add_contact(args, book=book))
+        elif command == "add-phone":
+            print(add_phone(args, book=book))
+        elif command == "add-birthday":
+            print(add_birthday(args, book=book))
+        elif command == "add-address":
+            print(add_address(args, book=book))
+        elif command == "add-email":
+            print(add_email(args, book=book))
         elif command == "change":
             print(change_contact(args, book=book))
         elif command == "phone":
             print(get_phone(args, book=book))
         elif command == "all":
             print(get_all_contacts(book))
-        elif command == "add-birthday":
-            print(add_birthday(args, book=book))
         elif command == "show-birthday":
             print(show_birthday(args, book=book))
         elif command == "birthdays":
-            print(get_birthdays_per_week(book))
+            print(get_birthdays(book=book, days_in_advance=args[0] if args else None))
         elif command == "search":
             print(search(args, book=book))
         elif command == "delete":
             print(delete_contact(args, book=book))
+        elif command == "change-birthday":
+            print(change_birthday(args, book=book))
+        elif command == "change-email":
+            print(change_email(args, book=book))
+        elif command == "change-name":
+            print(change_name(args, book=book))
         else:
             print("Invalid command.")
 
