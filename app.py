@@ -2,7 +2,7 @@ from cli.models.address_book import AddressBook
 from cli.models.notebook import Notebook
 
 from cli.services.address_book_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
-    show_birthday, search, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
+    show_birthday, search, delete_contact, change_birthday, change_email, change_name, change_address, get_birthdays, \
     add_email, add_address, add_phone
 from cli.services.file_service import write_data_to_file, read_data_from_file
 from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
@@ -36,6 +36,7 @@ def main():
         'change-birthday <name> <new_birthday_date>' - change birthday, format of date <dd.mm.YYYY>
         'change-name <name> <new_name>' - change name
         'change-email <name> <mail>' - change email
+        'change-address <name> <new address>' - change address 
         ---
         'phone <name>' - get all phone numbers in the contact
         'all' - get all contacts
@@ -91,6 +92,8 @@ def main():
             print(change_email(args, book=book))
         elif command == "change-name":
             print(change_name(args, book=book))
+        elif command == "change-address":
+            print(change_address(args, book=book))           
         elif command == "add-note":
             print(add_note(args, notebook=notebook))
         elif command == "all-notes":

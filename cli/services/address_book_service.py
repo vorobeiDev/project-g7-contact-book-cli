@@ -101,6 +101,17 @@ def change_email(args, book: AddressBook):
 
 
 @error_handler
+def change_address(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'change-address <name> <new addres>' command for changing address.")
+    name, address = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.change_address(address)
+    return f"Address for {name} was changed."
+
+@error_handler
 def get_phone(args, book: AddressBook):
     if len(args) != 1:
         raise IncorrectArgumentsQuantityError("To get the user's phone number please use 'phone <name>' command.")
