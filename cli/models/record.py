@@ -61,12 +61,12 @@ class Birthday(Field):
 
 
 class Record:
-    def __init__(self, name, address=None, email=None, birthday=None):
+    def __init__(self, name):
         self.name = Name(name)
         self.phones = []
-        self.birthday = Birthday(birthday) if birthday else None
-        self.address = Address(address) if address else None
-        self.email = Email(email) if email else None
+        self.birthday = None
+        self.address = None
+        self.email = None
 
     def __iter__(self):
         yield "name", self.name.value
@@ -74,16 +74,16 @@ class Record:
         yield "birthday", self.birthday.value if self.birthday else None
         yield "address", self.address.value if self.address else None
         yield "email", self.email.value if self.email else None
-        
+
     def to_dict(self):
         return dict(self)
 
     def add_address(self, address):
         self.address = Address(address)
-    
+
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
-    
+
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 
@@ -104,6 +104,18 @@ class Record:
             if p.value == phone:
                 return p
         return None
+
+    def change_birthday(self, birthday):
+       self.birthday = Birthday(birthday)
+
+    def change_email(self, email):
+        self.email = Email(email)
+
+    def change_name(self, new_name):
+        self.name = Name(new_name)
+
+    def add_birthday(self, date):
+        self.birthday = Birthday(date)
 
     def __str__(self):
         phones = f"\nPhones: {', '.join(p.value for p in self.phones)}; " if len(self.phones) > 0 else ""
