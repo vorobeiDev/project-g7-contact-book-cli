@@ -1,8 +1,6 @@
 from .errors import ContactExistsError, ContactNotFoundError, \
-    IncorrectArgumentsQuantityError, ContactsAreEmptyError, PhoneValidationError, \
-    BirthdayValidationError, SearchParamAreIncorrectError, NoMatchesFoundError, \
     ContactIsAlreadyExistsError, ContactNotFoundAddressBook, NoteNotFoundError, \
-    NoteAlreadyExistsError, NotesListIsEmptyError
+    NoteAlreadyExistsError, NotesListIsEmptyError, \
     IncorrectArgumentsQuantityError, ContactsAreEmptyError, PhoneValidationError, BirthdayValidationError, \
     SearchParamAreIncorrectError, NoMatchesFoundError
 from cli.utils.helpers import rich_console_error
@@ -35,21 +33,23 @@ def error_handler(func):
             rich_console_error(e)
             return "\n"
         except SearchParamAreIncorrectError:
-            return "Search param is incorrect. Use 'search <search_query>' command for searching contacts."
-        except NoMatchesFoundError:
-            return "No matches found. Use 'search <search_query>' command for searching contacts."
+            rich_console_error("Search param is incorrect. Use 'search <search_query>' command for searching contacts.")
+            return "\n"
         except ContactNotFoundAddressBook:
-            return ("Contact not found in AddressBook. Please enter correct name. Use 'delete <name>'"
+            rich_console_error("Contact not found in AddressBook. Please enter correct name. Use 'delete <name>'"
                     " command for removing contact")
+            return "\n"
         except ContactIsAlreadyExistsError:
-            return "Contact is already registered. Use change command for update old one"
+            rich_console_error("Contact is already registered. Use change command for update old one")
+            return "\n"
         except NoteNotFoundError as e:
-            return f"Note not found. {str(e)}" if e else "Note not found."
+            rich_console_error(f"Note not found. {str(e)}" if e else "Note not found.")
+            return "\n"
         except NoteAlreadyExistsError as e:
-            return f"Note already exists. {str(e)}" if e else "Note already exists."
+            rich_console_error(f"Note already exists. {str(e)}" if e else "Note already exists.")
+            return "\n"
         except NotesListIsEmptyError:
-            return "No notes list is empty"
-            rich_console_error("Search param is incorrect. Use 'search <search_param>' command for searching contacts.")
+            rich_console_error("No notes list is empty.")
             return "\n"
         except NoMatchesFoundError:
             rich_console_error("No matches found. Use 'search <search_param>' command for searching contacts.")
