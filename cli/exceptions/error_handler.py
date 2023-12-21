@@ -38,6 +38,6 @@ def error_handler(func):
             return f"Note already exists. {str(e)}" if e else "Note already exists."
         except NotesListIsEmptyError:
             return "No notes list is empty"
-        # except Exception as e:
-        #     return e
+        except Exception as e:
+            return e
     return inner
