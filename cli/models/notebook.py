@@ -1,41 +1,21 @@
-class Note:
-    def __init__(self, name, text):
-        self.name = name
-        self.text = text
+from collections import UserDict
 
-    def __str__(self):
-        return f"{self.name}: {self.text}"
+from cli.models.note import Note
 
 
-class Notebook:
-    def __init__(self):
-        self.notes = []
+class Notebook(UserDict):
+    def add_note(self, note: Note):
+        self.data[note.id] = note
 
-    def add_note(self, name, text):
-        self.notes.append(Note(name, text))
+    def find_by_id(self, _id):
+        return self.data.get(_id)
 
-    def delete_note(self, name):
-        for note in self.notes:
-            if note.name == name:
-                self.notes.remove(note)
-                return f"Note '{name}' deleted."
-        return f"Note '{name}' not found."
+    def find_all(self):
+        return self.data.items()
 
-    def edit_note(self, name, new_text):
-        for note in self.notes:
-            if note.name == name:
-                note.text = new_text
-                return f"Note '{name}' edited."
-        return f"Note '{name}' not found."
+    def find_by_name(self, name):
+        return [note for note in self.data.values() if note.title == name]
 
-    def list_notes(self):
-        return [str(note) for note in self.notes]
-
-    def save_notes_to_file(self, filename):
-        with open(filename, 'wb') as file:
-            pickle.dump(self.notes, file)
-
-    def load_notes_from_file(self, filename):
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            with open(filename, 'rb') as file:
-                self.notes = pickle.load(file)
+    def delete(self, _id):
+        if _id in self.data:
+            del self.data[_id]

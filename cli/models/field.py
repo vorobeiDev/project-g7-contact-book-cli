@@ -1,7 +1,8 @@
+import re
 from datetime import datetime
 
 from cli.utils.constants import BIRTHDAYS_DATE_FORMAT
-from cli.exceptions.errors import PhoneValidationError, BirthdayValidationError
+from cli.exceptions.errors import PhoneValidationError, BirthdayValidationError, EmailValidationError
 
 
 class Field:
@@ -16,16 +17,35 @@ class Name(Field):
     pass
 
 
+class Address(Field):
+    def __init__(self, value):
+        super().__init__(value)
+
+
 class Phone(Field):
     def __init__(self, value):
         if self.validate(value):
             super().__init__(value)
         else:
-            raise PhoneValidationError("Phone number must have 10 digits")
+            raise PhoneValidationError(f"Incorrect phone number: {value}")
 
     @staticmethod
     def validate(phone):
-        return len(phone) == 10 and phone.isdigit()
+        """Validation of phone number"""
+        return bool(re.match(r'^\d{10}$', phone))
+
+
+class Email(Field):
+    def __init__(self, value):
+        if self.validate(value):
+            super().__init__(value)
+        else:
+            raise EmailValidationError(f"Incorrect email: {value}")
+
+    @staticmethod
+    def validate(email):
+        """Validation of email address"""
+        return bool(re.match(r'^[^@]+@[^@]+\.[^@]+$', email))
 
 
 class Birthday(Field):
@@ -38,3 +58,11 @@ class Birthday(Field):
     @staticmethod
     def validate(date):
         return len(date) == 10 and datetime.strptime(date, BIRTHDAYS_DATE_FORMAT)
+
+
+class Title(Field):
+    pass
+
+
+class Description(Field):
+    pass

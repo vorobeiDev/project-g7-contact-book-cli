@@ -4,7 +4,7 @@ def parse_input(user_input):
     return cmd, *args
 
 
-def parse_contact_input(user_input):
+def parse_question_input(user_input):
     args = user_input.split()
     return args
 
