@@ -33,3 +33,10 @@ class NoMatchesFoundError(Exception):
 
 class ContactNotFoundAddressBook(Exception):
     pass
+
+
+class NoteNotFoundError(Exception):
+    pass
+
+class NoteAlreadyExistsError(Exception):
+    pass

@@ -5,8 +5,8 @@ from cli.models.address_book import AddressBook
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError, ContactNotFoundAddressBook
-from cli.models.record import Record
+    SearchParamAreIncorrectError, NoMatchesFoundError, ContactNotFoundAddressBook, NoteNotFoundError, NoteAlreadyExistsError
+from cli.models.record import Record, Notebook
 from cli.utils.helpers import is_match
 
 
@@ -141,5 +141,40 @@ def delete_contact(args, book: AddressBook):
         return f"Contact {name} was deleted!"
     raise ContactNotFoundAddressBook
     
-
+@error_handler
+def add_note(args, notebook: Notebook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To add a note, use 'add-note <name> <text>' command.")
+    name, text = args
+    try:
+        notebook.add_note(name, text)
+        return f"Note added to {name}."
+    except NoteAlreadyExistsError:
+        return f"Note already exists for {name}. Use 'edit-note' to modify it."
     
+@error_handler
+def edit_note(args, notebook: Notebook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To edit a note, use 'edit-note <name> <new_text>' command.")
+    name, new_text = args
+    try:
+        return notebook.edit_note(name, new_text)
+    except NoteNotFoundError:
+        return f"Note not found for {name}."
+
+@error_handler
+def delete_note(args, notebook: Notebook):
+    if len(args) != 1:
+        raise IncorrectArgumentsQuantityError("To delete a note, use 'delete-note <name>' command.")
+    name = args[0]
+    try:
+        return notebook.delete_note(name)
+    except NoteNotFoundError:
+        return f"Note not found for {name}."
+
+@error_handler
+def list_notes(args, notebook: Notebook):
+    notes = notebook.list_notes()
+    if notes:
+        return "\n".join(notes)
+    return "No notes found."

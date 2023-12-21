@@ -1,15 +1,21 @@
+import os
+
 from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
 from cli.utils.helpers import parse_input
 from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
     show_birthday, get_birthdays_per_week, search, delete_contact
 from cli.models.address_book import AddressBook
+from cli.models.record import Notebook
 
 
 def main():
     book = AddressBook()
     book_from_file = read_contacts_from_file("book.pkl")
+    notebook = Notebook()
     if book_from_file is not None:
         book = book_from_file
+    notebook.load_notes_from_file("notes.pkl")
+
     print("Welcome to the assistant bot!")
     print("""
         Command list:
@@ -22,6 +28,10 @@ def main():
         'show-birthday <name>' - shows a birthday
         'delete <name>' - delete contact from the contact
         'search <search_query>' - for searching information in the contact
+        'add-note <name> <text>' - adds a new note.
+        'edit-note <name> <new_text>' - edits an existing note.
+        'delete-note <name>' - deletes a note.
+        'list-notes' - lists all notes.
         'exit' or 'close' - closes the app
     """)
     while True:
@@ -51,8 +61,24 @@ def main():
             print(search(args, book=book))
         elif command == "delete":
             print(delete_contact(args, book=book))
+        elif command == "add-note":
+            notebook.add_note(*args)
+            print("Note added.")
+        elif command == "edit-note":
+            print(notebook.edit_note(*args))
+        elif command == "delete-note":
+            print(notebook.delete_note(*args))
+        elif command == "list-notes":
+            notes = notebook.list_notes()
+            if notes:
+                print("\n".join(notes))
+            else:
+                print("No notes.")
         else:
             print("Invalid command.")
+
+        write_contacts_to_file("book.pkl", book)
+        notebook.save_notes_to_file("notes.pkl")
 
         write_contacts_to_file("book.pkl", book)
 
