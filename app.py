@@ -18,6 +18,7 @@ from rich.progress import track
 from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
+from rich.table import Table
 
 
 def main():
@@ -59,6 +60,23 @@ def main():
         ---
         'exit' or 'close' - closes the app
     """)
+    
+    table = Table(title="Welcome to the assistant bot!")
+    table.add_column("Command list", style="cyan", no_wrap=True)
+    table.add_column("Parameters", style="magenta")
+    table.add_column("Description", justify="left", style="green")
+
+    table.add_row("hello", "-", "shows hello message")
+    table.add_row("add", "<name> <phone>", "adds a new contact")
+    table.add_row("change", "<name> <old_phone> <phone>", "changes a phone number in the contact")
+    table.add_row("phone", "<name>", "get all phone numbers in the contact")
+    table.add_row("all", "-", "get all contacts")
+    table.add_row("add-birthday", "<name> <birthday_date>", "adds a birthday")
+    table.add_row("show-birthday", "<name>", "shows a birthday")
+    table.add_row("exit or close", "-", "closes the app")
+    console = Console()
+    console.print(table)
+
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
