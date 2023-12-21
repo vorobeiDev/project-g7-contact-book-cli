@@ -56,7 +56,6 @@ def get_phone(args, book: AddressBook):
 @error_handler
 def get_all_contacts(book: AddressBook):
     records = book.find_all()
-    print(records)
     if len(records) == 0:
         raise ContactsAreEmptyError
     return "\n".join([str(record) for _, record in records])
