@@ -73,6 +73,8 @@ def get_content(contact):
     contact_name = None
     phones = None
     birthday = None
+    email = None
+    notes = None
 
     for part in parts:
         # Split each part into key and value based on the ':'
@@ -89,7 +91,7 @@ def get_content(contact):
                 phones = val
 
     # Print or use the extracted keys and values
-    return f"[b]{contact_name}[/b]\n[yellow]{phones}"
+    return f"[b]{contact_name}[/b]\n[white]Phones: [yellow]{phones}\n[white]Email: [yellow]{email}\n[white]Birthday: [yellow]{birthday}\n[white]Notes: [yellow]{notes}"
 
 @error_handler
 def add_birthday(args, book: AddressBook):
