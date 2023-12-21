@@ -68,6 +68,7 @@ def get_content(contact):
     value = str(value)
     # Split the value string based on the delimiter ';'
     parts = value.split(';')
+    
 
     # Initialize variables to store extracted keys and values
     contact_name = None
@@ -79,6 +80,7 @@ def get_content(contact):
     for part in parts:
         # Split each part into key and value based on the ':'
         key_value = part.split(':')
+        print(key_value)
         
         # Clean up whitespace and assign the key-value pairs accordingly
         if len(key_value) == 2:
@@ -89,6 +91,12 @@ def get_content(contact):
                 contact_name = val
             elif key == 'phones':
                 phones = val
+            elif key == 'Birthday':
+                birthday = val
+            elif key == 'Email':
+                email = val
+            elif key == 'Notes':
+                notes = val
 
     # Print or use the extracted keys and values
     return f"[b]{contact_name}[/b]\n[white]Phones: [yellow]{phones}\n[white]Email: [yellow]{email}\n[white]Birthday: [yellow]{birthday}\n[white]Notes: [yellow]{notes}"
