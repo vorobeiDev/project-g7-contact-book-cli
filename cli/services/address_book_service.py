@@ -7,7 +7,7 @@ from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
     SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError, ContactNotFoundAddressBook
 from cli.models.record import Record
-from cli.utils.helpers import is_match, parse_contact_input
+from cli.utils.helpers import is_match, parse_question_input
 
 
 @error_handler
@@ -27,7 +27,7 @@ def add_contact(args, book: AddressBook):
 
     for key in contact_information:
         user_input = input(f"Do you want to add a {key}? (n/no - for skip): ")
-        args = parse_contact_input(user_input)
+        args = parse_question_input(user_input)
 
         if args[0].lower() in ["n", "no"]:
             continue
@@ -35,15 +35,15 @@ def add_contact(args, book: AddressBook):
             value = " ".join(args)
             if key == "phone":
                 new_contact.add_phone(phone=value)
-            if key == "email":
+            elif key == "email":
                 new_contact.add_email(email=value)
-            if key == "address":
+            elif key == "address":
                 new_contact.add_address(address=value)
-            if key == "birthday":
+            elif key == "birthday":
                 new_contact.add_birthday(birthday=value)
 
     book.add_record(record=new_contact)
-    return "Contact was created."
+    return "Contact created!"
 
 
 @error_handler
@@ -57,22 +57,24 @@ def change_contact(args, book: AddressBook):
     contact.edit_phone(old_phone=old_phone, new_phone=phone)
     return "Contact changed."
 
+
 @error_handler
 def change_name(args, book: AddressBook):
     if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("Use 'change-name <name> <new_name>' command for changing name.") 
+        raise IncorrectArgumentsQuantityError("Use 'change-name <name> <new_name>' command for changing name.")
     name, new_name = args
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
-        
+
     if name == new_name:
         raise IncorrectArgumentsQuantityError("The name and new name are the same. Use different new name. New name must be different.")
     contact.change_name(new_name)
     book.add_record(contact)
     book.delete(name)
-    
+
     return f"Contact {name} was changed on {new_name}."
+
 
 @error_handler
 def change_birthday(args, book: AddressBook):
@@ -96,6 +98,7 @@ def change_email(args, book: AddressBook):
         raise ContactNotFoundError
     contact.change_email(email)
     return f"Email for {name} was changed."
+
 
 @error_handler
 def get_phone(args, book: AddressBook):
@@ -246,5 +249,3 @@ def delete_contact(args, book: AddressBook):
         book.delete(name)
         return f"Contact {name} was deleted!"
     raise ContactNotFoundAddressBook
-
-

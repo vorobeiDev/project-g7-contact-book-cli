@@ -23,8 +23,10 @@ class ContactsAreEmptyError(Exception):
 class PhoneValidationError(Exception):
     pass
 
+
 class EmailValidationError(Exception):
     pass
+
 
 class BirthdayValidationError(Exception):
     pass
@@ -37,5 +39,18 @@ class SearchParamAreIncorrectError(Exception):
 class NoMatchesFoundError(Exception):
     pass
 
+
 class ContactNotFoundAddressBook(Exception):
+    pass
+
+
+class NoteNotFoundError(Exception):
+    pass
+
+
+class NoteAlreadyExistsError(Exception):
+    pass
+
+
+class NotesListIsEmptyError(Exception):
     pass

@@ -1,16 +1,26 @@
-from cli.services.file_service import write_contacts_to_file, read_contacts_from_file
-from cli.utils.helpers import parse_input
-from cli.services.command_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
+from cli.models.address_book import AddressBook
+from cli.models.notebook import Notebook
+
+from cli.services.address_book_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
     show_birthday, search, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
     add_email, add_address, add_phone
-from cli.models.address_book import AddressBook
+from cli.services.file_service import write_data_to_file, read_data_from_file
+from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
+
+from cli.utils.helpers import parse_input
 
 
 def main():
     book = AddressBook()
-    book_from_file = read_contacts_from_file("book.pkl")
+    notebook = Notebook()
+    book_from_file = read_data_from_file("book.pkl")
+    notebook_from_file = read_data_from_file("notebook.pkl")
+
     if book_from_file is not None:
         book = book_from_file
+    if notebook_from_file is not None:
+        notebook = notebook_from_file
+
     print("Welcome to the assistant bot!")
     print("""
         Command list:
@@ -34,6 +44,11 @@ def main():
         ---
         'delete <name>' - delete contact from the contact
         'search <search_query>' - for searching information in the contact
+        ---
+        'add-note <title>' - adds a new note.
+        'edit-note <id>' - edits an existing note. If you want to get ID use 'all-notes' command.
+        'delete-note <id>' - deletes a note.
+        'all-notes' - lists all notes.
         ---
         'exit' or 'close' - closes the app
     """)
@@ -76,10 +91,19 @@ def main():
             print(change_email(args, book=book))
         elif command == "change-name":
             print(change_name(args, book=book))
+        elif command == "add-note":
+            print(add_note(args, notebook=notebook))
+        elif command == "all-notes":
+            print(get_all_notes(notebook=notebook))
+        elif command == "edit-note":
+            print(edit_note(args, notebook=notebook))
+        elif command == "delete-note":
+            print(delete_note(args, notebook=notebook))
         else:
             print("Invalid command.")
 
-        write_contacts_to_file("book.pkl", book)
+        write_data_to_file("book.pkl", book)
+        write_data_to_file("notebook.pkl", notebook)
 
 
 if __name__ == "__main__":
