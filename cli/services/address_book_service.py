@@ -1,3 +1,5 @@
+from prompt_toolkit.shortcuts import yes_no_dialog
+
 from datetime import datetime, date
 from collections import defaultdict
 
@@ -225,8 +227,16 @@ def get_birthdays(book: AddressBook, days_in_advance = None):
 @error_handler
 def delete_contact(args, book: AddressBook):
     name = args[0]
-    # TODO: Add input with question "Do you want to delete contact? (yes/no)"
-    if name in book.keys():
-        book.delete(name)
-        return f"Contact {name} was deleted!"
-    raise ContactNotFoundAddressBook
+
+    result = yes_no_dialog(
+        title="Delete contact",
+        text="Do you want to delete contact?").run()
+
+    if result:
+        print(book.keys())
+        if name in book.keys():
+            book.delete(name)
+            return f"Contact {name} was deleted!"
+        raise ContactNotFoundAddressBook
+    else:
+        return f"Contact {name} doesn't deleted!"

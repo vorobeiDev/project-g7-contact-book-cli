@@ -1,3 +1,5 @@
+from prompt_toolkit.shortcuts import yes_no_dialog
+
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import IncorrectArgumentsQuantityError, NoteAlreadyExistsError, NoteNotFoundError, \
     NotesListIsEmptyError
@@ -75,5 +77,12 @@ def delete_note(args, notebook: Notebook):
     if note is None:
         raise NoteNotFoundError(f"Note with id {_id} does not found")
 
-    notebook.delete(_id=int(_id))
-    return f"Note with id {_id} was deleted."
+    result = yes_no_dialog(
+        title="Delete note",
+        text=f"Do you want to delete note '{note.title.value}'?").run()
+
+    if result:
+        notebook.delete(_id=int(_id))
+        return f"Note with id {_id} was deleted."
+    else:
+        return f"Note '{note.title.value}' doesn't deleted!"

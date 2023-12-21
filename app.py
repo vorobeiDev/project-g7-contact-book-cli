@@ -5,7 +5,7 @@ from cli.services.address_book_service import add_contact, change_contact, get_p
     show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
     add_email, add_address, add_phone
 from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.services.line_helper import help
+from cli.services.input_helper import get_help, prompt_handler
 from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
 from cli.services.search_service import search
 
@@ -24,9 +24,9 @@ def main():
         notebook = notebook_from_file
 
     print("Welcome to the assistant bot!")
-    print(help())
+    print(get_help())
     while True:
-        user_input = input("Enter a command: ")
+        user_input = prompt_handler("Enter a command: ")
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
@@ -35,7 +35,7 @@ def main():
         elif command == "hello":
             print("Hi! How can I help you?")
         elif command == "help":
-            print(help())
+            print(get_help())
         elif command == "add":
             print(add_contact(args, book=book))
         elif command == "add-phone":
