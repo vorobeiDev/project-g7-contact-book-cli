@@ -19,6 +19,8 @@ class ContactsAreEmptyError(Exception):
 class PhoneValidationError(Exception):
     pass
 
+class EmailValidationError(Exception):
+    pass
 
 class BirthdayValidationError(Exception):
     pass

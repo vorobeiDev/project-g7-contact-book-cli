@@ -14,7 +14,7 @@ def main():
     print("""
         Command list:
         'hello' - shows hello message
-        'add <name> <phone>' - adds a new contact.
+        'add <name> <phone> <birthday> <address> <email>' - adds a new contact.
         'change <name> <old_phone> <phone>' - changes a phone number in the contact
         'phone <name>' - get all phone numbers in the contact
         'all' - get all contacts

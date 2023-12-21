@@ -1,7 +1,8 @@
+import re
 from datetime import datetime
 
 from cli.utils.constants import BIRTHDAYS_DATE_FORMAT
-from cli.exceptions.errors import PhoneValidationError, BirthdayValidationError
+from cli.exceptions.errors import PhoneValidationError, BirthdayValidationError, EmailValidationError
 
 
 class Field:
@@ -15,18 +16,33 @@ class Field:
 class Name(Field):
     pass
 
+class Address(Field):
+    def __init__(self, value):
+        super().__init__(value)
 
 class Phone(Field):
     def __init__(self, value):
         if self.validate(value):
             super().__init__(value)
         else:
-            raise PhoneValidationError("Phone number must have 10 digits")
+            raise PhoneValidationError(f"Некоректний номер телефону: {value}")
 
     @staticmethod
     def validate(phone):
-        return len(phone) == 10 and phone.isdigit()
+        # Припустимо, що номер має відповідати українському формату мобільного номеру: 10 цифр
+        return bool(re.match(r'^\d{10}$', phone))
 
+class Email(Field):
+    def __init__(self, value):
+        if self.validate(value):
+                super().__init__(value)
+        else:
+            raise EmailValidationError(f"Некоректна електронна адреса: {value}")
+
+    @staticmethod
+    def validate(email):
+        # Проста перевірка за допомогою регулярного виразу
+        return bool(re.match(r'^[^@]+@[^@]+\.[^@]+$', email))
 
 class Birthday(Field):
     def __init__(self, value):
@@ -41,21 +57,34 @@ class Birthday(Field):
 
 
 class Record:
-    def __init__(self, name):
+    def __init__(self, name, address=None, email=None, birthday=None):
         self.name = Name(name)
         self.phones = []
-        self.birthday = None
+        self.birthday = Birthday(birthday) if birthday else None
+        self.address = Address(address) if address else None
+        self.email = Email(email) if email else None
 
     def __iter__(self):
         yield "name", self.name.value
         yield "phones", [phone.value for phone in self.phones]
         yield "birthday", self.birthday.value if self.birthday else None
-
+        yield "address", self.address.value if self.address else None
+        yield "email", self.email.value if self.email else None
+        
     def to_dict(self):
         return dict(self)
 
+    def add_address(self, address):
+        self.address = Address(address)
+    
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
+    
+    def add_birthday(self, date):
+        self.birthday = Birthday(date)
+
+    def add_email(self, email):
+        self.email = Email(email)
 
     def remove_phone(self, phone):
         self.phones = [p for p in self.phones if p.value != phone]
@@ -72,14 +101,15 @@ class Record:
                 return p
         return None
 
-    def add_birthday(self, date):
-        self.birthday = Birthday(date)
-
     def __str__(self):
-        birthday = f"Birthday: {self.birthday}" if self.birthday is not None else ""
+        birthday = f"Birthday: {self.birthday} " if self.birthday is not None else ""
+        address = f"Address: {self.address} " if self.address is not None else ""
+        email = f"Email: {self.email }" if self.email is not None else ""
         return (f"Contact name: {self.name.value}; "
                 f"phones: {', '.join(p.value for p in self.phones)}; " +
-                f"{birthday}"
+                f"{birthday}" +
+                f"{address}" +
+                f"{email}"
                 )
 
     def __repr__(self):

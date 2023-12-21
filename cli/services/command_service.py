@@ -12,15 +12,18 @@ from cli.utils.helpers import is_match
 
 @error_handler
 def add_contact(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name> <phone>' command.")
-    name, phone = args
+    if len(args) != 5:
+        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name> <phone> <birthday> <address> <email>' command.")
+    name, phone, birthday, address, email = args
     contact = book.find(name=name)
     if contact is not None:
         contact.add_phone(phone=phone)
         return f"New phone was added to {name}."
     new_contact = Record(name=name)
     new_contact.add_phone(phone=phone)
+    new_contact.add_birthday(date=birthday)
+    new_contact.add_address(address=address)
+    new_contact.add_email(email=email)
     book.add_record(record=new_contact)
     return "Contact added."
 
@@ -53,6 +56,7 @@ def get_phone(args, book: AddressBook):
 @error_handler
 def get_all_contacts(book: AddressBook):
     records = book.find_all()
+    print(records)
     if len(records) == 0:
         raise ContactsAreEmptyError
     return "\n".join([str(record) for _, record in records])
