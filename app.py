@@ -1,11 +1,11 @@
 from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.utils.helpers import parse_input, process_data, hello, rich_console, rich_console_error, progress_bar
+from cli.utils.helpers import parse_input, hello, rich_console, rich_console_error, progress_bar
 from cli.models.address_book import AddressBook
 from cli.models.notebook import Notebook
 from cli.services.address_book_service import get_all_contacts, \
     show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
     add_email, add_address, add_phone, add_contact, change_contact, get_phone, get_all_contacts_object, get_content, add_birthday, \
-    get_birthdays_per_week, search
+    search
 from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
 
 from rich.console import Console
