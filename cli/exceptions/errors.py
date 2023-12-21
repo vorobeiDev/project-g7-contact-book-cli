@@ -11,7 +11,6 @@ class IncorrectArgumentsQuantityError(Exception):
 class ContactNotFoundError(Exception):
     pass
 
-
 class ContactsAreEmptyError(Exception):
     pass
 
