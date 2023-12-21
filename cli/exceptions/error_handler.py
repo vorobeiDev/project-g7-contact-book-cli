@@ -1,6 +1,7 @@
 from .errors import ContactExistsError, ContactNotFoundError, \
-    IncorrectArgumentsQuantityError, ContactsAreEmptyError, PhoneValidationError, BirthdayValidationError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError, ContactNotFoundAddressBook, NoteNotFoundError, \
+    IncorrectArgumentsQuantityError, ContactsAreEmptyError, PhoneValidationError, \
+    BirthdayValidationError, SearchParamAreIncorrectError, NoMatchesFoundError, \
+    ContactIsAlreadyExistsError, ContactNotFoundAddressBook, NoteNotFoundError, \
     NoteAlreadyExistsError
 
 
@@ -28,6 +29,8 @@ def error_handler(func):
             return "No matches found. Use 'search <search_query>' command for searching contacts."
         except ContactNotFoundAddressBook:
             return "Contact not found in AddressBook. Please enter correct name. Use 'delete <name>' comand for removing contact"
+        except ContactIsAlreadyExistsError:
+            return "Contact is already registered. Use change command for update old one"
         except NoteNotFoundError as e:
             return f"Note not found. {str(e)}" if e else "Note not found."
         except NoteAlreadyExistsError as e:
