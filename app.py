@@ -2,10 +2,12 @@ from cli.models.address_book import AddressBook
 from cli.models.notebook import Notebook
 
 from cli.services.address_book_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
-    show_birthday, search, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
+    show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
     add_email, add_address, add_phone
 from cli.services.file_service import write_data_to_file, read_data_from_file
+from cli.services.line_helper import help
 from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
+from cli.services.search_service import search
 
 from cli.utils.helpers import parse_input
 
@@ -22,36 +24,7 @@ def main():
         notebook = notebook_from_file
 
     print("Welcome to the assistant bot!")
-    print("""
-        Command list:
-        'hello' - shows hello message
-        ---
-        'add <name>' - adds a new contact. Arguments birthday, address and email are not required.
-        'add-phone <name> <phone>' - adds a new phone number
-        'add-email <name> <email>' - adds an email
-        'add-address <name> <address>' - adds an address
-        'add-birthday <name> <birthday_date>' - adds a birthday
-        ---
-        'change <name> <old_phone> <phone>' - changes a phone number in the contact
-        'change-birthday <name> <new_birthday_date>' - change birthday, format of date <dd.mm.YYYY>
-        'change-name <name> <new_name>' - change name
-        'change-email <name> <mail>' - change email
-        ---
-        'phone <name>' - get all phone numbers in the contact
-        'all' - get all contacts
-        'show-birthday <name>' - shows a birthday
-        'birthdays <days_in_advance>' - shows all birthdays in the next days in advance. <days_in_advance> is not required.
-        ---
-        'search <search_query>' - for searching information in the contact
-        'delete <name>' - delete contact from the contact
-        ---
-        'add-note <title>' - adds a new note.
-        'edit-note <id>' - edits an existing note. If you want to get ID use 'all-notes' command.
-        'delete-note <id>' - deletes a note.
-        'all-notes' - lists all notes.
-        ---
-        'exit' or 'close' - closes the app
-    """)
+    print(help())
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
@@ -61,6 +34,8 @@ def main():
             break
         elif command == "hello":
             print("Hi! How can I help you?")
+        elif command == "help":
+            print(help())
         elif command == "add":
             print(add_contact(args, book=book))
         elif command == "add-phone":
@@ -82,7 +57,9 @@ def main():
         elif command == "birthdays":
             print(get_birthdays(book=book, days_in_advance=args[0] if args else None))
         elif command == "search":
-            print(search(args, book=book))
+            print(search(args, book))
+        elif command == "search-note":
+            print(search(args, notebook))
         elif command == "delete":
             print(delete_contact(args, book=book))
         elif command == "change-birthday":
