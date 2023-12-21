@@ -4,9 +4,9 @@ from cli.models.address_book import AddressBook
 from cli.models.notebook import Notebook
 from cli.services.address_book_service import get_all_contacts, \
     show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
-    add_email, add_address, add_phone, add_contact, change_contact, get_phone, get_all_contacts_object, get_content, add_birthday, \
+    add_email, add_address, add_phone, add_contact, change_contact, get_phone, get_all_contacts_object, get_contacts_content, add_birthday, \
     search
-from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
+from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note, get_all_notes_object, get_notes_content
 
 from rich.console import Console
 from rich.columns import Columns
@@ -23,6 +23,9 @@ def main():
     if book_from_file is not None:
         book = book_from_file
     
+    if notebook_from_file is not None:
+        notebook = notebook_from_file
+
     hello()
 
     while True:
@@ -64,10 +67,12 @@ def main():
             rich_console(delete_note(args, notebook=notebook))
         elif command == "all":
             users = get_all_contacts_object(book)
-            user_renderables = [Panel(get_content(user), expand=True) for user in users]
+            user_renderables = [Panel(get_contacts_content(user), expand=True) for user in users]
             console.print(Columns(user_renderables))
         elif command == "all-notes":
-            rich_console(get_all_notes(notebook=notebook))
+            notes = get_all_notes_object(notebook)
+            note_renderables = [Panel(get_notes_content(note), expand=True) for note in notes]
+            console.print(Columns(note_renderables, equal=True, expand=True))
         elif command == "show-birthday":
             rich_console(show_birthday(args, book=book))
         elif command == "birthdays":

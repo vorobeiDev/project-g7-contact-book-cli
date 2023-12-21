@@ -128,7 +128,7 @@ def get_all_contacts(book: AddressBook):
 
 
 @error_handler
-def get_content(contact):
+def get_contacts_content(contact):
     """Extract text from user dict."""
     key, value = contact  # Unpack the tuple into key and value variables
     value = str(value)
