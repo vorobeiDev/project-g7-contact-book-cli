@@ -4,6 +4,11 @@ def parse_input(user_input):
     return cmd, *args
 
 
+def parse_question_input(user_input):
+    args = user_input.split()
+    return args
+
+
 def is_match(record, query):
     for value in record.to_dict().values():
         if value is None:

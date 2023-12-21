@@ -1,9 +1,10 @@
 from collections import UserDict
+from cli.models.record import Record
 
 
 class AddressBook(UserDict):
-    def add_record(self, record):
-        self.data[record.name.value] = record
+    def add_record(self, record: Record):
+        self.data[record.name] = record
 
     def find(self, name):
         return self.data.get(name)

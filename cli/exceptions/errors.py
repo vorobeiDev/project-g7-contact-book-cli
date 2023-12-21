@@ -12,11 +12,19 @@ class ContactNotFoundError(Exception):
     pass
 
 
+class ContactIsAlreadyExistsError(Exception):
+    pass
+
+
 class ContactsAreEmptyError(Exception):
     pass
 
 
 class PhoneValidationError(Exception):
+    pass
+
+
+class EmailValidationError(Exception):
     pass
 
 
@@ -31,5 +39,18 @@ class SearchParamAreIncorrectError(Exception):
 class NoMatchesFoundError(Exception):
     pass
 
+
 class ContactNotFoundAddressBook(Exception):
+    pass
+
+
+class NoteNotFoundError(Exception):
+    pass
+
+
+class NoteAlreadyExistsError(Exception):
+    pass
+
+
+class NotesListIsEmptyError(Exception):
     pass

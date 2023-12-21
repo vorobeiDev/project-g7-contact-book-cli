@@ -1,4 +1,6 @@
 .git
 .idea
+app
 __pycache__
 book.pkl
+notebook.pkl
