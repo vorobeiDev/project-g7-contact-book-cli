@@ -12,6 +12,10 @@ class ContactNotFoundError(Exception):
     pass
 
 
+class ContactIsAlreadyExistsError(Exception):
+    pass
+
+
 class ContactsAreEmptyError(Exception):
     pass
 

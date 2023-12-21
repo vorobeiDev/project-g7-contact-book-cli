@@ -16,33 +16,37 @@ class Field:
 class Name(Field):
     pass
 
+
 class Address(Field):
     def __init__(self, value):
         super().__init__(value)
+
 
 class Phone(Field):
     def __init__(self, value):
         if self.validate(value):
             super().__init__(value)
         else:
-            raise PhoneValidationError(f"Некоректний номер телефону: {value}")
+            raise PhoneValidationError(f"Incorrect phone number: {value}")
 
     @staticmethod
     def validate(phone):
-        # Припустимо, що номер має відповідати українському формату мобільного номеру: 10 цифр
+        """Validation of phone number"""
         return bool(re.match(r'^\d{10}$', phone))
+
 
 class Email(Field):
     def __init__(self, value):
         if self.validate(value):
-                super().__init__(value)
+            super().__init__(value)
         else:
-            raise EmailValidationError(f"Некоректна електронна адреса: {value}")
+            raise EmailValidationError(f"Incorrect email: {value}")
 
     @staticmethod
     def validate(email):
-        # Проста перевірка за допомогою регулярного виразу
+        """Validation of email address"""
         return bool(re.match(r'^[^@]+@[^@]+\.[^@]+$', email))
+
 
 class Birthday(Field):
     def __init__(self, value):
@@ -80,8 +84,8 @@ class Record:
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
     
-    def add_birthday(self, date):
-        self.birthday = Birthday(date)
+    def add_birthday(self, birthday):
+        self.birthday = Birthday(birthday)
 
     def add_email(self, email):
         self.email = Email(email)
@@ -102,14 +106,16 @@ class Record:
         return None
 
     def __str__(self):
-        birthday = f"Birthday: {self.birthday} " if self.birthday is not None else ""
-        address = f"Address: {self.address} " if self.address is not None else ""
-        email = f"Email: {self.email }" if self.email is not None else ""
+        phones = f"\nPhones: {', '.join(p.value for p in self.phones)}; " if len(self.phones) > 0 else ""
+        birthday = f"\nBirthday: {self.birthday}; " if self.birthday is not None else ""
+        address = f"\nAddress: {self.address}; " if self.address is not None else ""
+        email = f"\nEmail: {self.email}; " if self.email is not None else ""
         return (f"Contact name: {self.name.value}; "
-                f"phones: {', '.join(p.value for p in self.phones)}; " +
+                f"{phones}" +
                 f"{birthday}" +
                 f"{address}" +
                 f"{email}"
+                "\n"
                 )
 
     def __repr__(self):

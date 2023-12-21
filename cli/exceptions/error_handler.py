@@ -1,6 +1,6 @@
 from .errors import ContactExistsError, ContactNotFoundError, \
     IncorrectArgumentsQuantityError, ContactsAreEmptyError, PhoneValidationError, BirthdayValidationError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError
+    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError
 
 
 def error_handler(func):
@@ -25,6 +25,8 @@ def error_handler(func):
             return "Search param is incorrect. Use 'search <search_param>' command for searching contacts."
         except NoMatchesFoundError:
             return "No matches found. Use 'search <search_param>' command for searching contacts."
+        except ContactIsAlreadyExistsError:
+            return "Contact is already registered. Use change command for update old one"
         except Exception as e:
             return e
     return inner

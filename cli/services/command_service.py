@@ -5,27 +5,45 @@ from cli.models.address_book import AddressBook
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError
+    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError
 from cli.models.record import Record
-from cli.utils.helpers import is_match
+from cli.utils.helpers import is_match, parse_contact_input
 
 
 @error_handler
 def add_contact(args, book: AddressBook):
-    if len(args) != 5:
-        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name> <phone> <birthday> <address> <email>' command.")
-    name, phone, birthday, address, email = args
+    if len(args) != 1:
+        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name>'command.")
+
+    name = args[0]
+
     contact = book.find(name=name)
     if contact is not None:
-        contact.add_phone(phone=phone)
-        return f"New phone was added to {name}."
+        raise ContactIsAlreadyExistsError
+
+    contact_information = ["phone", "email", "address", "birthday"]
+
     new_contact = Record(name=name)
-    new_contact.add_phone(phone=phone)
-    new_contact.add_birthday(date=birthday)
-    new_contact.add_address(address=address)
-    new_contact.add_email(email=email)
+
+    for key in contact_information:
+        user_input = input(f"Do you want to add a {key}? (n/no - for skip): ")
+        args = parse_contact_input(user_input)
+
+        if args[0].lower() in ["n", "no"]:
+            continue
+        else:
+            value = " ".join(args)
+            if key == "phone":
+                new_contact.add_phone(phone=value)
+            if key == "email":
+                new_contact.add_email(email=value)
+            if key == "address":
+                new_contact.add_address(address=value)
+            if key == "birthday":
+                new_contact.add_birthday(birthday=value)
+
     book.add_record(record=new_contact)
-    return "Contact added."
+    return "Contact was created."
 
 
 @error_handler
@@ -62,6 +80,18 @@ def get_all_contacts(book: AddressBook):
 
 
 @error_handler
+def add_phone(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To add phone number use 'add-phone <name> <phone>' command.")
+    name, phone = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.add_phone(phone=phone)
+    return "Phone number added."
+
+
+@error_handler
 def add_birthday(args, book: AddressBook):
     if len(args) != 2:
         raise IncorrectArgumentsQuantityError("To add a birthday use 'add-birthday <name> <birthday_date>' command in "
@@ -70,8 +100,35 @@ def add_birthday(args, book: AddressBook):
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
+    # TODO: Birthday already exists
     contact.add_birthday(date=birthday)
     return "Birthday added."
+
+
+@error_handler
+def add_address(args, book: AddressBook):
+    if len(args) < 2:
+        raise IncorrectArgumentsQuantityError("To add an address use 'add-address <name> <address>' command.")
+    name, *address = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    # TODO: Address already exists
+    contact.add_address(address=" ".join(address))
+    return "Address added."
+
+
+@error_handler
+def add_email(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To add an email use 'add-email <name> <email>' command.")
+    name, email = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    # TODO: Email already exists
+    contact.add_email(email=email)
+    return "Email added."
 
 
 @error_handler
