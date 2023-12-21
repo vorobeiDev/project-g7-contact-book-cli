@@ -5,24 +5,45 @@ from cli.models.address_book import AddressBook
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError, ContactNotFoundAddressBook
+    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError, ContactNotFoundAddressBook
 from cli.models.record import Record
-from cli.utils.helpers import is_match
+from cli.utils.helpers import is_match, parse_contact_input
 
 
 @error_handler
 def add_contact(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name> <phone>' command.")
-    name, phone = args
+    if len(args) != 1:
+        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name>'command.")
+
+    name = args[0]
+
     contact = book.find(name=name)
     if contact is not None:
-        contact.add_phone(phone=phone)
-        return f"New phone was added to {name}."
+        raise ContactIsAlreadyExistsError
+
+    contact_information = ["phone", "email", "address", "birthday"]
+
     new_contact = Record(name=name)
-    new_contact.add_phone(phone=phone)
+
+    for key in contact_information:
+        user_input = input(f"Do you want to add a {key}? (n/no - for skip): ")
+        args = parse_contact_input(user_input)
+
+        if args[0].lower() in ["n", "no"]:
+            continue
+        else:
+            value = " ".join(args)
+            if key == "phone":
+                new_contact.add_phone(phone=value)
+            if key == "email":
+                new_contact.add_email(email=value)
+            if key == "address":
+                new_contact.add_address(address=value)
+            if key == "birthday":
+                new_contact.add_birthday(birthday=value)
+
     book.add_record(record=new_contact)
-    return "Contact added."
+    return "Contact was created."
 
 
 @error_handler
@@ -98,6 +119,18 @@ def get_all_contacts(book: AddressBook):
 
 
 @error_handler
+def add_phone(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To add phone number use 'add-phone <name> <phone>' command.")
+    name, phone = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.add_phone(phone=phone)
+    return "Phone number added."
+
+
+@error_handler
 def add_birthday(args, book: AddressBook):
     if len(args) != 2:
         raise IncorrectArgumentsQuantityError("To add a birthday use 'add-birthday <name> <birthday_date>' command in "
@@ -106,8 +139,35 @@ def add_birthday(args, book: AddressBook):
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
+    # TODO: Birthday already exists
     contact.add_birthday(date=birthday)
     return "Birthday added."
+
+
+@error_handler
+def add_address(args, book: AddressBook):
+    if len(args) < 2:
+        raise IncorrectArgumentsQuantityError("To add an address use 'add-address <name> <address>' command.")
+    name, *address = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    # TODO: Address already exists
+    contact.add_address(address=" ".join(address))
+    return "Address added."
+
+
+@error_handler
+def add_email(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("To add an email use 'add-email <name> <email>' command.")
+    name, email = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    # TODO: Email already exists
+    contact.add_email(email=email)
+    return "Email added."
 
 
 @error_handler
@@ -118,35 +178,41 @@ def show_birthday(args, book: AddressBook):
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
+    # TODO: Don't show if a user doesn't have a birthday
     return f"{name} was born in {contact.birthday}"
 
 
 @error_handler
-def get_birthdays_per_week(book: AddressBook):
+def get_birthdays(book: AddressBook, days_in_advance = None):
+    if days_in_advance is None:
+        print("You can add days in advance. Use command 'birthdays <days_in_advance>. Default days in advance is 7")
+    days_in_advance = int(days_in_advance) if days_in_advance is not None else 7
     today = date.today()
     birthdays = defaultdict(list)
     records = book.find_all()
 
     for name, user in records:
-        birthday_str = str(user.birthday)
-        birthday = datetime.strptime(birthday_str, BIRTHDAYS_DATE_FORMAT).date()
-        birthday_this_year = birthday.replace(year=today.year)
+        if user.birthday is not None:
+            birthday_str = str(user.birthday)
+            birthday = datetime.strptime(birthday_str, BIRTHDAYS_DATE_FORMAT).date()
+            birthday_this_year = birthday.replace(year=today.year)
 
-        if birthday_this_year < today:
-            birthday_this_year = birthday_this_year.replace(year=today.year + 1)
+            if birthday_this_year < today:
+                birthday_this_year = birthday_this_year.replace(year=today.year + 1)
 
-        delta_days = (birthday_this_year - today).days
+            delta_days = (birthday_this_year - today).days
 
-        if delta_days < 7:
-            weekday = birthday_this_year.weekday()
-            if weekday in [5, 6]:
-                weekday = 0
+            if delta_days < days_in_advance:
+                weekday = birthday_this_year.weekday()
+                if weekday in [5, 6]:
+                    weekday = 0
 
-            weekday_name = WEEKDAYS[weekday]
-            birthdays[weekday_name].append(name)
+                weekday_name = WEEKDAYS[weekday]
+                birthdays[weekday_name].append(name)
 
+    plural = "" if days_in_advance == 1 else "s"
     if len(birthdays) == 0:
-        return "No birthdays"
+        return f"No birthdays in next {days_in_advance} day{plural}."
 
     for day in WEEKDAYS:
         if birthdays[day]:
@@ -175,10 +241,10 @@ def search(args, book: AddressBook):
 @error_handler
 def delete_contact(args, book: AddressBook):
     name = args[0]
+    # TODO: Add input with question "Do you want to delete contact? (yes/no)"
     if name in book.keys():
         book.delete(name)
         return f"Contact {name} was deleted!"
     raise ContactNotFoundAddressBook
-    
 
-    
+
