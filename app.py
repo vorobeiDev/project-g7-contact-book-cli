@@ -6,16 +6,16 @@ from rich.panel import Panel
 from cli.models.address_book import AddressBook
 from cli.models.notebook import Notebook
 
-from cli.services.address_book_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
+from cli.services.address_book_service import add_contact, change_contact, get_phone, add_birthday, \
     show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
     add_email, add_address, add_phone, get_all_contacts_object, get_contacts_content
 from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.services.input_helper import get_help, prompt_handler
-from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note, get_all_notes_object, \
+from cli.services.input_helper import prompt_handler, print_hello, progress_bar, rich_console, rich_console_error
+from cli.services.notebook_service import add_note, edit_note, delete_note, get_all_notes_object, \
     get_notes_content
 from cli.services.search_service import search
 
-from cli.utils.helpers import parse_input, hello, rich_console, rich_console_error, progress_bar
+from cli.utils.helpers import parse_input
 
 
 def main():
@@ -31,9 +31,7 @@ def main():
     if notebook_from_file is not None:
         notebook = notebook_from_file
 
-    print("Welcome to the assistant bot!")
-    print(get_help())
-    hello()
+    print_hello()
 
     while True:
         user_input = prompt_handler("Enter a command: ")
@@ -46,9 +44,8 @@ def main():
             break
         elif command == "hello":
             rich_console("Hi! How can I help you?")
-            print("Hi! How can I help you?")
         elif command == "help":
-            pass
+            print_hello()
         elif command == "add":
             rich_console(add_contact(args, book=book))
         elif command == "add-phone":
@@ -85,7 +82,10 @@ def main():
         elif command == "all-notes":
             notes = get_all_notes_object(notebook)
             note_renderables = [Panel(get_notes_content(note), expand=True) for note in notes]
-            console.print(Columns(note_renderables, equal=True, expand=True))
+            if note_renderables:
+                console.print(Columns(note_renderables, equal=True, expand=True))
+            else:
+                console.print("Notebook is empty.")
         elif command == "show-birthday":
             rich_console(show_birthday(args, book=book))
         elif command == "birthdays":

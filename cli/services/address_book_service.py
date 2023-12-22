@@ -4,6 +4,7 @@ from datetime import datetime, date
 from collections import defaultdict
 
 from cli.models.address_book import AddressBook
+from cli.services.input_helper import answer_prompt_handler
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
@@ -28,7 +29,7 @@ def add_contact(args, book: AddressBook):
     new_contact = Record(name=name)
 
     for key in contact_information:
-        user_input = input(f"Do you want to add a {key}? (n/no - for skip): ")
+        user_input = answer_prompt_handler(f"Do you want to add a {key}? (n/no - for skip): ")
         args = parse_question_input(user_input)
 
         if args[0].lower() in ["n", "no"]:
