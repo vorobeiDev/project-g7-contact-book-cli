@@ -16,7 +16,7 @@ def search(args, entry: AddressBook | Notebook):
         raise SearchParamAreIncorrectError
 
     query = args[0].lower()
-    result = {record for name, record in records if is_match(record, query)}
+    result = {record for _, record in records if is_match(record, query)}
 
     if len(result) == 0:
         raise NoMatchesFoundError

@@ -4,6 +4,7 @@ from rich.columns import Columns
 from rich.panel import Panel
 
 from cli.models.address_book import AddressBook
+from cli.models.note import Note
 from cli.models.notebook import Notebook
 
 from cli.services.address_book_service import add_contact, change_contact, get_phone, add_birthday, \
@@ -12,7 +13,7 @@ from cli.services.address_book_service import add_contact, change_contact, get_p
 from cli.services.file_service import write_data_to_file, read_data_from_file
 from cli.services.input_helper import prompt_handler, print_hello, progress_bar, rich_console, rich_console_error
 from cli.services.notebook_service import add_note, edit_note, delete_note, get_all_notes_object, \
-    get_notes_content
+    get_notes_content, add_tag, delete_tag
 from cli.services.search_service import search
 
 from cli.utils.helpers import parse_input
@@ -30,6 +31,7 @@ def main():
 
     if notebook_from_file is not None:
         notebook = notebook_from_file
+        Note.counter = len(notebook) + 1
 
     print_hello()
 
@@ -95,7 +97,13 @@ def main():
         elif command == "phone":
             rich_console(get_phone(args, book=book))
         elif command == "search":
-            rich_console(search(args, book=book))
+            rich_console(search(args, entry=book))
+        elif command == "search-note":
+            rich_console(search(args, entry=notebook))
+        elif command == "add-tag":
+            rich_console(add_tag(args, notebook=notebook))
+        elif command == "delete-tag":
+            rich_console(delete_tag(args, notebook=notebook))
         else:
             rich_console_error("Invalid command.")
 

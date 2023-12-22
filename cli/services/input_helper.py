@@ -29,18 +29,18 @@ def print_hello():
     table.add_column("Parameters", style="magenta")
     table.add_column("Description", justify="left", style="green")
 
-    table.add_row("hello", "", "shows hello message")
-    table.add_row("help", "", "shows command table")
+    table.add_row("hello", "", "show hello message")
+    table.add_row("help", "", "show command table")
     table.add_row()
 
-    table.add_row("add", "<name>", "adds a new contact. Arguments birthday, address and email are not required")
-    table.add_row("add-phone", "<name> <phone>", "adds a new phone number")
-    table.add_row("add-email", "<name> <email>", "adds an email")
-    table.add_row("add-address", "<name> <address>", "adds an address")
-    table.add_row("add-birthday", "<name> <birthday_date>", "adds a birthday")
+    table.add_row("add", "<name>", "adds a new contact. Arguments birthday, addres and email are not required")
+    table.add_row("add-phone", "<name> <phone>", "add a new phone number")
+    table.add_row("add-email", "<name> <email>", "add an email")
+    table.add_row("add-address", "<name> <address>", "add an address")
+    table.add_row("add-birthday", "<name> <birthday_date>", "add a birthday")
     table.add_row()
 
-    table.add_row("change", "<name> <old_phone> <phone>", "changes a phone number in the contact")
+    table.add_row("change", "<name> <old_phone> <phone>", "change a phone number in the contact")
     table.add_row("change-birthday", "<name> <new_birthday_date>", "change birthday, format of date <dd.mm.YYYY>")
     table.add_row("change-name", "<name> <new_name>", "change name")
     table.add_row("change-email", "<name> <new_email>", "change email")
@@ -51,19 +51,22 @@ def print_hello():
 
     table.add_row("phone", "<name>", "get all phone numbers in the contact")
     table.add_row("all", "", "get all contacts")
-    table.add_row("show-birthday", "<name>", "shows a birthday")
-    table.add_row("birthdays", "<days_in_advance>", "shows all birthdays in the next days in advance. <days_in_advance> is not required")
+    table.add_row("show-birthday", "<name>", "show a birthday")
+    table.add_row("birthdays", "<days_in_advance>", "show all birthdays in the next days in advance. <days_in_advance> is not required")
     table.add_row()
 
     table.add_row("search", "<search_query>", "for searching information in the contact")
     table.add_row("search-note", "<search_query>", "for searching information in the notes")
     table.add_row()
 
-    table.add_row("add-note", "<title>", "adds a new note")
-    table.add_row("edit-note", "<id>", "edits an existing note. If you want to get ID use 'all-notes' command")
-    table.add_row("delete-note", "<id>", "deletes a note")
-    table.add_row("all-notes", "", "lists all notes")
+    table.add_row("add-note", "<title>", "add a new note")
+    table.add_row("edit-note", "<id>", "edit an existing note. If you want to get ID use 'all-notes' command")
+    table.add_row("delete-note", "<id>", "delete a note")
+    table.add_row("all-notes", "", "list all notes")
     table.add_row()
+
+    table.add_row("add-tag", "<id> <new_tag_name>", "add a new tag to the existing note with ID")
+    table.add_row("delete-tag", "<id> <tag_name>", "delete a new tag to the existing note with ID")
 
     table.add_row("exit or close", "", "closes the app")
 
@@ -91,10 +94,13 @@ completer = NestedCompleter.from_nested_dict({
     "show-birthday": {"<name>"},
     "birthdays": {"<days_in_advance>"},
     "search": {"<search_query>"},
+    "search-note": {"<search_query>"},
     "delete": {"<name>"},
     "add-note": {"<title>"},
     "edit-note": {"<id>"},
     "delete-note": {"<id>"},
+    "add-tag": {"<id> <new_tag_name>"},
+    "delete-tag": {"<id> <tag_name>"},
     "all-notes": None,
 })
 

@@ -66,3 +66,7 @@ class Title(Field):
 
 class Description(Field):
     pass
+
+
+class Tag(Field):
+    pass

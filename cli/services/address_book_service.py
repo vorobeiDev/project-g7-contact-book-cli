@@ -165,10 +165,10 @@ def get_contacts_content(contact):
         if len(key_value) == 2:
             key = key_value[0].strip()
             val = key_value[1].strip()
-            
+
             if key == 'Contact name':
                 contact_name = val
-            elif key == 'phones':
+            elif key == 'Phones':
                 phones = val
             elif key == 'Birthday':
                 birthday = val
@@ -291,7 +291,6 @@ def delete_contact(args, book: AddressBook):
         text="Do you want to delete contact?").run()
 
     if result:
-        print(book.keys())
         if name in book.keys():
             book.delete(name)
             return f"Contact {name} was deleted!"

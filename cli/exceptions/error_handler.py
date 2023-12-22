@@ -24,7 +24,7 @@ def error_handler(func):
             rich_console_error(error)
             return ""
         except ContactsAreEmptyError:
-            rich_console_error("Contacts are empty.")
+            rich_console_error("List are empty.")
             return ""
         except PhoneValidationError as e:
             rich_console_error(str(e))
