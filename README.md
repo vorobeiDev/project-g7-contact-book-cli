@@ -55,68 +55,61 @@ app/g7cli.exe
 
 ## Commands
 1. Adding a new contact
-   1. **Command:** `add <name>`
-   2. **Example:** `add JohnDoe`
+   1. **Command:** `add`
+   2. **Example:** `add`
 2. Adding a phone to existing contact
-   1. **Command:** `add-phone <name> <phone>`
-   2. **Example:** `add-phone JohnDoe 1234567890`
+   1. **Command:** `add-phone <name>`
+   2. **Example:** `add-phone JohnDoe`
 3. Adding an email to existing contact
-   1. **Command:** `add-email <name> <email>`
-   2. **Example:** `add-emai JohnDoe test@gmail.com`
+   1. **Command:** `add-email <name>`
+   2. **Example:** `add-emai John Doe`
 4. Adding an address to existing contact
-   1. **Command:** `add-address <name> <address>`
-   2. **Example:** `add-address JohnDoe Some Streen 123`
+   1. **Command:** `add-address <name>`
+   2. **Example:** `add-address John Doe`
 5. Adding a birthday to existing contact
-   1. **Command:** `add-birthday <name> <birthday>`
-   2. **Example:** `add-birthday JohnDoe 19.12.1994`
+   1. **Command:** `add-birthday <name>`
+   2. **Example:** `add-birthday John Doe`
 6. Changing a contact's phone number
-   1. **Command:** `change <name> <old_phone> <new_phone>`
-   2. **Example:** `change John Doe 1234567890 9876543210`
-   
-
-      change-name
-      change-birthday
-      change-email
-      change-address - need to crate method
- 
+   1. **Command:** `change <name>`
+   2. **Example:** `change John Doe`
 7. Getting all phone numbers for a contact
    1. **Command**: `phone <name>`
    2. **Example:** `phone JohnDoe`
 8. List all contacts
    1. **Command:** `all`
-10. Displaying a contact's birthday
-    1. **Command:** `show-birthday <name>`
-    2. **Example:** `show-birthday John Doe`
-11. Displaying birthdays for in the next days in advance
+9. Displaying a contact's birthday
+   1. **Command:** `show-birthday <name>`
+   2. **Example:** `show-birthday John Doe`
+10. Displaying birthdays for in the next days in advance
     1. **Command:** `birthdays <days_in_advance>`
-12. Searching for contacts
+11. Searching for contacts
     1. **Command:** `search <search_query>`
     2. **Example:** `search John` `search 09`
-13. Deleting a contact
+12. Deleting a contact
     1. **Command:** `delete <name>`
     2. **Example:** `delete UserName`
+13. Adding a note
+    1. **Command:** `add-note <title>`
+    2. **Example:** `add-note reminding`
 14. Adding a note
     1. **Command:** `add-note <title>`
     2. **Example:** `add-note reminding`
-15. Adding a note
-    1. **Command:** `add-note <title>`
-    2. **Example:** `add-note reminding`
-16. Editing a note
+15. Editing a note
     1. **Command:** `edit-note <id>`
     2. **Example:** `edit-note 1`
-17. Deleting a note
+16. Deleting a note
     1. **Command**: `delete-note <id>`
     2. **Example**: `delete-note 1`
-18. Displaying all notes
+17. Displaying all notes
     1. **Command**: `list-notes`
-19. Adding a new tag to a note
+18. Adding a new tag to a note
     1. **Command**: `add-tag <id> <title>`
     2. **Example**: `add-tag 1 dog`
-20. Deleting a tag from a note
+19. Deleting a tag from a note
     1. **Command**: `delete-tag <id> <title>`
     2. **Example**: `delete-tag 1 dog`
-21. Exiting the program
-22. Use any of the following **commands:** `exit, close`
+20. Exiting the program
+21. Use any of the following **commands:** `exit, close`
 
 ## Additional Information
 The program automatically saves your contacts in book.pkl and notes in notebook.pkl for future use.

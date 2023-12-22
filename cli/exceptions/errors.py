@@ -16,6 +16,11 @@ class ContactIsAlreadyExistsError(Exception):
     pass
 
 
+class ContactHasNotBeenChanged(Exception):
+    def __init__(self, message=""):
+        super().__init__(message)
+
+
 class ContactsAreEmptyError(Exception):
     pass
 

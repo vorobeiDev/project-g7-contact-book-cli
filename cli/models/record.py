@@ -34,29 +34,29 @@ class Record:
     def remove_phone(self, phone):
         self.phones = [p for p in self.phones if p.value != phone]
 
-    def edit_phone(self, old_phone, new_phone):
-        for phone in self.phones:
-            if phone.value == old_phone:
-                phone.value = new_phone
-                break
-
     def find_phone(self, phone):
         for p in self.phones:
             if p.value == phone:
                 return p
         return None
 
-    def change_birthday(self, birthday):
-       self.birthday = Birthday(birthday)
-
-    def change_email(self, email):
-        self.email = Email(email)
+    def change_phone(self, old_phone, new_phone):
+        for phone in self.phones:
+            if phone.value == old_phone:
+                phone.value = new_phone
+                break
 
     def change_name(self, new_name):
         self.name = Name(new_name)
 
+    def change_email(self, new_email):
+        self.email = Email(new_email)
+
     def change_address(self, new_address):
         self.address = Address(new_address)
+
+    def change_birthday(self, new_birthday):
+       self.birthday = Birthday(new_birthday)
 
     def __str__(self):
         phones = f"\nPhones: {', '.join(p.value for p in self.phones)}; " if len(self.phones) > 0 else ""

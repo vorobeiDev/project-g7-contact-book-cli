@@ -1,24 +1,28 @@
-from prompt_toolkit.shortcuts import yes_no_dialog
+from prompt_toolkit.shortcuts import yes_no_dialog, input_dialog, radiolist_dialog
 
 from datetime import datetime, date
 from collections import defaultdict
 
 from cli.models.address_book import AddressBook
-from cli.services.input_helper import answer_prompt_handler
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-     ContactIsAlreadyExistsError, ContactNotFoundAddressBook
+    ContactIsAlreadyExistsError, ContactNotFoundAddressBook, ContactHasNotBeenChanged
 from cli.models.record import Record
-from cli.utils.helpers import parse_question_input
 
 
 @error_handler
 def add_contact(args, book: AddressBook):
-    if len(args) != 1:
-        raise IncorrectArgumentsQuantityError("To add a new contact use 'add <name>'command.")
+    if len(args) != 0:
+        raise IncorrectArgumentsQuantityError("To add a new contact use 'add' command.")
 
-    name = args[0]
+    name = input_dialog(
+        title="Create new contact",
+        text="Please enter a name for a new contact:"
+    ).run()
+
+    if name is None:
+        return "Contact isn't created!"
 
     contact = book.find(name=name)
     if contact is not None:
@@ -29,13 +33,14 @@ def add_contact(args, book: AddressBook):
     new_contact = Record(name=name)
 
     for key in contact_information:
-        user_input = answer_prompt_handler(f"Do you want to add a {key}? (n/no - for skip): ")
-        args = parse_question_input(user_input)
+        value = input_dialog(
+            title=f"Add a {key}",
+            text=f"Please enter a contact {key}:"
+        ).run()
 
-        if args[0].lower() in ["n", "no"]:
+        if value is None:
             continue
         else:
-            value = " ".join(args)
             if key == "phone":
                 new_contact.add_phone(phone=value)
             elif key == "email":
@@ -46,73 +51,90 @@ def add_contact(args, book: AddressBook):
                 new_contact.add_birthday(birthday=value)
 
     book.add_record(record=new_contact)
-    return "Contact created!"
+    return "Contact is created!"
+
+
+def get_new_value(key):
+    value = input_dialog(
+        title=f"Change contact {key}",
+        text=f"Please enter a new contact {key}:"
+    ).run()
+    if value is None:
+        raise ContactHasNotBeenChanged
+    return value
+
+
+def get_old_phone(phones):
+    values = [(str(phone), str(phone)) for phone in phones]
+    old_phone = radiolist_dialog(
+        title="Change contact",
+        text="Which phone's number do you want to change?",
+        values=values
+    ).run()
+    if old_phone is None:
+        raise ContactHasNotBeenChanged
+    return old_phone
+
+
+def copy_contact_with_new_name(new_name, contact):
+    new_contact = Record(name=new_name)
+    new_contact.phones = contact.phones if len(contact.phones) else []
+    new_contact.email = contact.email if contact.email else None
+    new_contact.birthday = contact.birthday if contact.birthday else None
+    new_contact.address = contact.address if contact.address else None
+    return new_contact
 
 
 @error_handler
 def change_contact(args, book: AddressBook):
-    if len(args) != 3:
-        raise IncorrectArgumentsQuantityError("Use 'change <name> <old_phone> <phone>' command for changing contact.")
-    name, old_phone, phone = args
-    contact = book.find(name=name)
-    if contact is None:
-        raise ContactNotFoundError
-    contact.edit_phone(old_phone=old_phone, new_phone=phone)
-    return "Contact changed."
+    name = " ".join(args)
 
+    if len(name) == 0:
+        raise IncorrectArgumentsQuantityError("Use 'change <name>' command for changing contact information.")
 
-@error_handler
-def change_name(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("Use 'change-name <name> <new_name>' command for changing name.")
-    name, new_name = args
     contact = book.find(name=name)
+
     if contact is None:
         raise ContactNotFoundError
 
-    if name == new_name:
-        raise IncorrectArgumentsQuantityError("The name and new name are the same. Use different new name. New name must be different.")
-    contact.change_name(new_name)
-    book.add_record(contact)
-    book.delete(name)
+    key = radiolist_dialog(
+        title="Change contact",
+        text="Which param do you want to change?",
+        values=[
+            ("name", "Contact name"),
+            ("phone", "Contact phone number"),
+            ("email", "Contact email"),
+            ("address", "Contact address"),
+            ("birthday", "Contact birthday")
+        ]
+    ).run()
 
-    return f"Contact {name} was changed on {new_name}."
+    if key is None:
+        raise ContactHasNotBeenChanged(name)
 
+    if key == "name":
+        new_name = get_new_value(key)
+        book.delete(name=name)
+        book.add_record(copy_contact_with_new_name(new_name=new_name, contact=contact))
+    elif key == "email":
+        value = get_new_value(key)
+        contact.change_email(new_email=value)
+    elif key == "address":
+        value = get_new_value(key)
+        contact.change_address(new_address=value)
+    elif key == "birthday":
+        value = get_new_value(key)
+        contact.change_birthday(new_birthday=value)
+    elif key == "phone":
+        if len(contact.phones) == 0:
+            value = get_new_value("phone number")
+            contact.add_phone(value)
+        else:
+            old_phone = get_old_phone(contact.phones)
+            value = get_new_value("phone number")
+            contact.change_phone(old_phone=old_phone, new_phone=value)
 
-@error_handler
-def change_birthday(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("Use 'change-birthday <name> <new birthday date>' command for changing birthday.")
-    name, birthday = args
-    contact = book.find(name=name)
-    if contact is None:
-        raise ContactNotFoundError
-    contact.change_birthday(birthday)
-    return f"Birthday for {name} was changed."
-
-
-@error_handler
-def change_email(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("Use 'change-email <name> <email>' command for changing email.")
-    name, email = args
-    contact = book.find(name=name)
-    if contact is None:
-        raise ContactNotFoundError
-    contact.change_email(email)
-    return f"Email for {name} was changed."
-
-
-@error_handler
-def change_address(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("Use 'change-address <name> <new address>' command for changing address.")
-    name, address = args
-    contact = book.find(name=name)
-    if contact is None:
-        raise ContactNotFoundError
-    contact.change_address(address)
-    return f"Address for {name} was changed."
+    return f"Contact {contact.name} is changed."
 
 
 @error_handler
@@ -183,52 +205,82 @@ def get_contacts_content(contact):
 
 @error_handler
 def add_phone(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("To add phone number use 'add-phone <name> <phone>' command.")
-    name, phone = args
+    name = " ".join(args)
+    if len(name) == 0:
+        raise IncorrectArgumentsQuantityError("To add phone number use 'add-phone <name>' command.")
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
+    phone = input_dialog(
+        title=f"Add a new phone number",
+        text=f"Please enter a new contact phone number:"
+    ).run()
+    if phone is None:
+        raise ContactHasNotBeenChanged(name)
+
     contact.add_phone(phone=phone)
     return "Phone number added."
 
 
 @error_handler
 def add_birthday(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("To add a birthday use 'add-birthday <name> <birthday_date>' command in "
-                                              f"format '{BIRTHDAYS_DATE_FORMAT}'.")
-    name, birthday = args
+    name = " ".join(args)
+    if len(args) == 0:
+        raise IncorrectArgumentsQuantityError("To add a birthday use 'add-birthday <name>' command")
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
-    # TODO: Birthday already exists
-    contact.add_birthday(date=birthday)
+
+    birthday_exists = f"Contact {name} has birthday {contact.birthday}\n" if contact.birthday is not None else ""
+
+    birthday = input_dialog(
+        title=f"Add a new birthday",
+        text=f"{birthday_exists}Please enter a new contact birthday:"
+    ).run()
+    if birthday is None:
+        raise ContactHasNotBeenChanged(name)
+    contact.add_birthday(birthday=birthday)
     return "Birthday added."
 
 
 @error_handler
 def add_address(args, book: AddressBook):
-    if len(args) < 2:
-        raise IncorrectArgumentsQuantityError("To add an address use 'add-address <name> <address>' command.")
-    name, *address = args
+    name = " ".join(args)
+    if len(args) == 0:
+        raise IncorrectArgumentsQuantityError("To add an address use 'add-address <name>' command")
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
-    # TODO: Address already exists
-    contact.add_address(address=" ".join(address))
+
+    address_exists = f"Contact {name} has address {contact.address}\n" if contact.address is not None else ""
+
+    address = input_dialog(
+        title=f"Add a new address",
+        text=f"{address_exists}Please enter a new contact address:"
+    ).run()
+    if address is None:
+        raise ContactHasNotBeenChanged(name)
+    contact.add_address(address=address)
     return "Address added."
 
 
 @error_handler
 def add_email(args, book: AddressBook):
-    if len(args) != 2:
-        raise IncorrectArgumentsQuantityError("To add an email use 'add-email <name> <email>' command.")
-    name, email = args
+    name = " ".join(args)
+    if len(args) == 0:
+        raise IncorrectArgumentsQuantityError("To add an email use 'add-email <name>' command.")
     contact = book.find(name=name)
     if contact is None:
         raise ContactNotFoundError
-    # TODO: Email already exists
+
+    email_exists = f"Contact {name} has email {contact.email}\n" if contact.email is not None else ""
+
+    email = input_dialog(
+        title=f"Add a new email",
+        text=f"{email_exists}Please enter a new contact email:"
+    ).run()
+    if email is None:
+        raise ContactHasNotBeenChanged(name)
     contact.add_email(email=email)
     return "Email added."
 
