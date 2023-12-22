@@ -114,11 +114,56 @@ def get_phone(args, book: AddressBook):
 
 
 @error_handler
+def get_all_contacts_object(book: AddressBook):
+    records = book.find_all()
+    return records
+
+
+@error_handler
 def get_all_contacts(book: AddressBook):
     records = book.find_all()
     if len(records) == 0:
         raise ContactsAreEmptyError
     return "\n".join([str(record) for _, record in records])
+
+
+@error_handler
+def get_contacts_content(contact):
+    """Extract text from user dict."""
+    key, value = contact  # Unpack the tuple into key and value variables
+    value = str(value)
+    # Split the value string based on the delimiter ';'
+    parts = value.split(';')
+    
+    # Initialize variables to store extracted keys and values
+    contact_name = None
+    phones = None
+    birthday = None
+    email = None
+    notes = None
+
+    for part in parts:
+        # Split each part into key and value based on the ':'
+        key_value = part.split(':')
+        
+        # Clean up whitespace and assign the key-value pairs accordingly
+        if len(key_value) == 2:
+            key = key_value[0].strip()
+            val = key_value[1].strip()
+            
+            if key == 'Contact name':
+                contact_name = val
+            elif key == 'phones':
+                phones = val
+            elif key == 'Birthday':
+                birthday = val
+            elif key == 'Email':
+                email = val
+            elif key == 'Notes':
+                notes = val
+
+    # Print or use the extracted keys and values
+    return f"[b]{contact_name}[/b]\n[white]Phones: [yellow]{phones}\n[white]Email: [yellow]{email}\n[white]Birthday: [yellow]{birthday}\n[white]Notes: [yellow]{notes}"
 
 
 @error_handler
