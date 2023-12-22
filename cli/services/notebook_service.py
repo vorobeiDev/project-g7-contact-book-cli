@@ -36,7 +36,7 @@ def get_all_notes(notebook: Notebook):
     notes = notebook.find_all()
     if len(notes) == 0:
         raise NotesListIsEmptyError
-    return "\n".join([str(note) for _id, note in notes])
+    return "\n".join([str(note) for _, note in notes])
 
 
 @error_handler
@@ -77,3 +77,27 @@ def delete_note(args, notebook: Notebook):
 
     notebook.delete(_id=int(_id))
     return f"Note with id {_id} was deleted."
+
+@error_handler
+def add_tag(args, notebook: Notebook):
+    if len(args) < 2:
+        raise IncorrectArgumentsQuantityError("To add a tag, use 'add-tag <id> <tag>' command.")
+    _id, *tags = args
+    note = notebook.find_by_id(_id=int(_id))
+    if note is None:
+        raise NoteNotFoundError(f"Note with id {_id} does not found")
+
+    note.add_tag(tags)
+    return f"Tag(s) added to note with id {_id}."
+
+@error_handler
+def delete_tag(args, notebook: Notebook):
+    if len(args) < 2:
+        raise IncorrectArgumentsQuantityError("To delete a tag, use 'delete-tag <id> <tag>' command.")
+    _id, *tags = args
+    note = notebook.find_by_id(_id=int(_id))
+    if note is None:
+        raise NoteNotFoundError(f"Note with id {_id} does not found")
+
+    note.delete_tag(tags)
+    return f"Tag(s) deleted from note with id {_id}."

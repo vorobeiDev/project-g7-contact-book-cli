@@ -5,7 +5,7 @@ from cli.services.address_book_service import add_contact, change_contact, get_p
     show_birthday, search, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
     add_email, add_address, add_phone
 from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
+from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note, add_tag, delete_tag
 
 from cli.utils.helpers import parse_input
 
@@ -99,6 +99,10 @@ def main():
             print(edit_note(args, notebook=notebook))
         elif command == "delete-note":
             print(delete_note(args, notebook=notebook))
+        elif command == "add-tag":
+            print(add_tag(args, notebook=notebook))
+        elif command == "delete-tag":
+            print(delete_tag(args, notebook=notebook))
         else:
             print("Invalid command.")
 
