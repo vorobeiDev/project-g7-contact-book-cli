@@ -104,6 +104,18 @@ def change_email(args, book: AddressBook):
 
 
 @error_handler
+def change_address(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'change-address <name> <new address>' command for changing address.")
+    name, address = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.change_address(address)
+    return f"Address for {name} was changed."
+
+
+@error_handler
 def get_phone(args, book: AddressBook):
     if len(args) != 1:
         raise IncorrectArgumentsQuantityError("To get the user's phone number please use 'phone <name>' command.")
@@ -143,7 +155,7 @@ def get_contacts_content(contact):
     phones = None
     birthday = None
     email = None
-    notes = None
+    address = None
 
     for part in parts:
         # Split each part into key and value based on the ':'
@@ -162,11 +174,11 @@ def get_contacts_content(contact):
                 birthday = val
             elif key == 'Email':
                 email = val
-            elif key == 'Notes':
-                notes = val
+            elif key == 'Address':
+                address = val
 
     # Print or use the extracted keys and values
-    return f"[b]{contact_name}[/b]\n[white]Phones: [yellow]{phones}\n[white]Email: [yellow]{email}\n[white]Birthday: [yellow]{birthday}\n[white]Notes: [yellow]{notes}"
+    return f"[b]{contact_name}[/b]\n[white]Phones: [yellow]{phones}\n[white]Email: [yellow]{email}\n[white]Birthday: [yellow]{birthday}\n[white]Address: [yellow]{address}"
 
 
 @error_handler
