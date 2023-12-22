@@ -4,7 +4,7 @@ from cli.models.record import Record
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
-        self.data[record.name] = record
+        self.data[record.name.value] = record
 
     def find(self, name):
         return self.data.get(name)
