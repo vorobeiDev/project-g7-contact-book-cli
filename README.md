@@ -1,7 +1,7 @@
-### Team Project - G7
-## CLI APP
+# CLI APP
+## Team Project - G7
 
-This command line interface (CLI) application allows you to easily manage your contacts, birthdays and notes. Follow the instructions below to interact with the app.
+> This command line interface (CLI) application allows you to easily manage your contacts, birthdays and notes. Follow the instructions below to interact with the app.
 
 # How to use app?
 
@@ -114,7 +114,3 @@ app/g7cli.exe
 
 ## Additional Information
 The program automatically saves your contacts in book.pkl and notes in notebook.pkl for future use.
-## Team Project - G7
-
-pip install Rich
-python -m rich

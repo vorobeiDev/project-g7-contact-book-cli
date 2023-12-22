@@ -68,7 +68,10 @@ def main():
         elif command == "all":
             users = get_all_contacts_object(book)
             user_renderables = [Panel(get_contacts_content(user), expand=True) for user in users]
-            console.print(Columns(user_renderables))
+            if user_renderables:
+                console.print(Columns(user_renderables))
+            else:
+                console.print("Contact book is empty.")
         elif command == "all-notes":
             notes = get_all_notes_object(notebook)
             note_renderables = [Panel(get_notes_content(note), expand=True) for note in notes]
