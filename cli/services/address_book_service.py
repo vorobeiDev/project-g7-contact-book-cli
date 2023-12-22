@@ -1,13 +1,16 @@
+from prompt_toolkit.shortcuts import yes_no_dialog
+
 from datetime import datetime, date
 from collections import defaultdict
 
 from cli.models.address_book import AddressBook
+from cli.services.input_helper import answer_prompt_handler
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError, ContactNotFoundAddressBook
+     ContactIsAlreadyExistsError, ContactNotFoundAddressBook
 from cli.models.record import Record
-from cli.utils.helpers import is_match, parse_question_input
+from cli.utils.helpers import parse_question_input
 
 
 @error_handler
@@ -26,7 +29,7 @@ def add_contact(args, book: AddressBook):
     new_contact = Record(name=name)
 
     for key in contact_information:
-        user_input = input(f"Do you want to add a {key}? (n/no - for skip): ")
+        user_input = answer_prompt_handler(f"Do you want to add a {key}? (n/no - for skip): ")
         args = parse_question_input(user_input)
 
         if args[0].lower() in ["n", "no"]:
@@ -268,29 +271,18 @@ def get_birthdays(book: AddressBook, days_in_advance = None):
 
 
 @error_handler
-def search(args, book: AddressBook):
-    records = book.find_all()
-
-    if len(records) == 0:
-        raise ContactsAreEmptyError
-
-    if len(args) != 1:
-        raise SearchParamAreIncorrectError
-
-    query = args[0].lower()
-    result = {record for name, record in records if is_match(record, query)}
-
-    if len(result) == 0:
-        raise NoMatchesFoundError
-
-    return '\n'.join(str(record) for record in result)
-
-
-@error_handler
 def delete_contact(args, book: AddressBook):
     name = args[0]
-    # TODO: Add input with question "Do you want to delete contact? (yes/no)"
-    if name in book.keys():
-        book.delete(name)
-        return f"Contact {name} was deleted!"
-    raise ContactNotFoundAddressBook
+
+    result = yes_no_dialog(
+        title="Delete contact",
+        text="Do you want to delete contact?").run()
+
+    if result:
+        print(book.keys())
+        if name in book.keys():
+            book.delete(name)
+            return f"Contact {name} was deleted!"
+        raise ContactNotFoundAddressBook
+    else:
+        return f"Contact {name} doesn't deleted!"

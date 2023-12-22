@@ -1,16 +1,21 @@
-from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.utils.helpers import parse_input, hello, rich_console, rich_console_error, progress_bar
-from cli.models.address_book import AddressBook
-from cli.models.notebook import Notebook
-from cli.services.address_book_service import get_all_contacts, \
-    show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
-    add_email, add_address, add_phone, add_contact, change_contact, get_phone, get_all_contacts_object, get_contacts_content, add_birthday, \
-    search
-from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note, get_all_notes_object, get_notes_content
 
 from rich.console import Console
 from rich.columns import Columns
 from rich.panel import Panel
+
+from cli.models.address_book import AddressBook
+from cli.models.notebook import Notebook
+
+from cli.services.address_book_service import add_contact, change_contact, get_phone, add_birthday, \
+    show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
+    add_email, add_address, add_phone, get_all_contacts_object, get_contacts_content
+from cli.services.file_service import write_data_to_file, read_data_from_file
+from cli.services.input_helper import prompt_handler, print_hello, progress_bar, rich_console, rich_console_error
+from cli.services.notebook_service import add_note, edit_note, delete_note, get_all_notes_object, \
+    get_notes_content
+from cli.services.search_service import search
+
+from cli.utils.helpers import parse_input
 
 
 def main():
@@ -22,14 +27,14 @@ def main():
 
     if book_from_file is not None:
         book = book_from_file
-    
+
     if notebook_from_file is not None:
         notebook = notebook_from_file
 
-    hello()
+    print_hello()
 
     while True:
-        user_input = input("Enter a command: ")
+        user_input = prompt_handler("Enter a command: ")
         command, *args = parse_input(user_input)
 
         progress_bar()
@@ -39,6 +44,8 @@ def main():
             break
         elif command == "hello":
             rich_console("Hi! How can I help you?")
+        elif command == "help":
+            print_hello()
         elif command == "add":
             rich_console(add_contact(args, book=book))
         elif command == "add-phone":
@@ -48,7 +55,7 @@ def main():
         elif command == "add-address":
             rich_console(add_address(args, book=book))
         elif command == "add-email":
-            rich_console(add_contact(args, book=book))
+            rich_console(add_email(args, book=book))
         elif command == "add-note":
             rich_console(add_note(args, notebook=notebook))
         elif command == "change":
@@ -75,7 +82,10 @@ def main():
         elif command == "all-notes":
             notes = get_all_notes_object(notebook)
             note_renderables = [Panel(get_notes_content(note), expand=True) for note in notes]
-            console.print(Columns(note_renderables, equal=True, expand=True))
+            if note_renderables:
+                console.print(Columns(note_renderables, equal=True, expand=True))
+            else:
+                console.print("Notebook is empty.")
         elif command == "show-birthday":
             rich_console(show_birthday(args, book=book))
         elif command == "birthdays":
