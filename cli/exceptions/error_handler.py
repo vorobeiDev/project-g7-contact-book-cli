@@ -2,8 +2,8 @@ from cli.exceptions.errors import ContactExistsError, ContactNotFoundError, \
     ContactIsAlreadyExistsError, ContactNotFoundAddressBook, NoteNotFoundError, \
     NoteAlreadyExistsError, NotesListIsEmptyError, \
     IncorrectArgumentsQuantityError, ContactsAreEmptyError, PhoneValidationError, BirthdayValidationError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError
-from cli.services.input_helper import rich_console_error
+    SearchParamAreIncorrectError, NoMatchesFoundError, ContactHasNotBeenChanged
+from cli.services.input_helper import rich_console_error, warning_console_error
 
 
 def error_handler(func):
@@ -16,7 +16,7 @@ def error_handler(func):
             rich_console_error(error)
             return ""
         except ContactNotFoundError:
-            rich_console_error("Contact not found. Use 'add <name> <phone>' command for adding a new contact.")
+            rich_console_error("Contact not found. Use 'add' command for adding a new contact.")
             return ""
         except IncorrectArgumentsQuantityError as e:
             error_message = "Incorrect arguments quantity."
@@ -53,6 +53,9 @@ def error_handler(func):
             return ""
         except NoMatchesFoundError:
             rich_console_error("No matches found. Use 'search <search_param>' command for searching contacts.")
+            return ""
+        except ContactHasNotBeenChanged as name:
+            warning_console_error(f"Contact '{name}' has not been changed!")
             return ""
         except Exception as e:
             rich_console_error(e)

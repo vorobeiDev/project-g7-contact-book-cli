@@ -8,8 +8,8 @@ from cli.models.note import Note
 from cli.models.notebook import Notebook
 
 from cli.services.address_book_service import add_contact, change_contact, get_phone, add_birthday, \
-    show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
-    add_email, add_address, add_phone, get_all_contacts_object, get_contacts_content, change_address
+    show_birthday, delete_contact, get_birthdays, \
+    add_email, add_address, add_phone, get_all_contacts_object, get_contacts_content
 from cli.services.file_service import write_data_to_file, read_data_from_file
 from cli.services.input_helper import prompt_handler, print_hello, progress_bar, rich_console, rich_console_error
 from cli.services.notebook_service import add_note, edit_note, delete_note, get_all_notes_object, \
@@ -62,14 +62,6 @@ def main():
             rich_console(add_note(args, notebook=notebook))
         elif command == "change":
             rich_console(change_contact(args, book=book))
-        elif command == "change-birthday":
-            rich_console(change_birthday(args, book=book))
-        elif command == "change-email":
-            rich_console(change_email(args, book=book))
-        elif command == "change-name":
-            rich_console(change_name(args, book=book))
-        elif command == "change-address":
-            rich_console(change_address(args, book=book))
         elif command == "edit-note":
             rich_console(edit_note(args, notebook=notebook))
         elif command == "delete":

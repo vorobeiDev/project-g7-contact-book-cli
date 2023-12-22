@@ -18,6 +18,12 @@ def rich_console_error(text, style="red"):
     console.print(Panel(text, expand=True), style=style)
 
 
+def warning_console_error(text, style="yellow"):
+    console = Console()
+    text = "⚠️  " + str(text)
+    console.print(Panel(text, expand=True), style=style)
+
+
 def rich_console(text, style="green"):
     console = Console()
     console.print(text, style=style)
@@ -33,17 +39,14 @@ def print_hello():
     table.add_row("help", "", "show command table")
     table.add_row()
 
-    table.add_row("add", "<name>", "adds a new contact. Arguments birthday, addres and email are not required")
-    table.add_row("add-phone", "<name> <phone>", "add a new phone number")
-    table.add_row("add-email", "<name> <email>", "add an email")
-    table.add_row("add-address", "<name> <address>", "add an address")
-    table.add_row("add-birthday", "<name> <birthday_date>", "add a birthday")
+    table.add_row("add", "", "add a new contact.")
+    table.add_row("add-phone", "<name>", "add a new phone number")
+    table.add_row("add-email", "<name>", "add an email")
+    table.add_row("add-address", "<name>", "add an address")
+    table.add_row("add-birthday", "<name>", "add a birthday")
     table.add_row()
 
-    table.add_row("change", "<name> <old_phone> <phone>", "change a phone number in the contact")
-    table.add_row("change-birthday", "<name> <new_birthday_date>", "change birthday, format of date <dd.mm.YYYY>")
-    table.add_row("change-name", "<name> <new_name>", "change name")
-    table.add_row("change-email", "<name> <new_email>", "change email")
+    table.add_row("change", "<name>", "change the contact information")
     table.add_row()
 
     table.add_row("delete", "<name>", "delete contact from the contact")
@@ -79,16 +82,12 @@ completer = NestedCompleter.from_nested_dict({
     "help": None,
     "exit": None,
     "close": None,
-    "add": {"<name>"},
-    "add-phone": {"<name> <phone>"},
-    "add-email": {"<name> <email>"},
-    "add-address": {"<name> <address>"},
-    "add-birthday": {"<name> <birthday>"},
-    "change": {"<name> <old_phone> <new_phone>"},
-    "change-birthday": {"<name> <new_birthday_date>"},
-    "change-name": {"<name> <new_name>"},
-    "change-email": {"<name> <new_email>"},
-    "change-address": {"<name> <new_address>"},
+    "add": None,
+    "add-phone": {"<name>"},
+    "add-email": {"<name>"},
+    "add-address": {"<name>"},
+    "add-birthday": {"<name>"},
+    "change": {"<name>"},
     "phone": {"<name>"},
     "all": None,
     "show-birthday": {"<name>"},
