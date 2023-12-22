@@ -1,3 +1,5 @@
+
+
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
@@ -15,8 +17,11 @@ def is_match(record, query):
             continue
 
         if isinstance(value, list):
+            if len(value) == 0:
+                return False
             if any(query in str(item).lower() for item in value):
                 return True
+
         elif query in str(value).lower():
             return True
 

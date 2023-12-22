@@ -55,11 +55,14 @@ class Record:
     def change_name(self, new_name):
         self.name = Name(new_name)
 
+    def change_address(self, new_address):
+        self.address = Address(new_address)
+
     def __str__(self):
         phones = f"\nPhones: {', '.join(p.value for p in self.phones)}; " if len(self.phones) > 0 else ""
-        birthday = f"\nBirthday: {self.birthday}; " if self.birthday is not None else ""
-        address = f"\nAddress: {self.address}; " if self.address is not None else ""
-        email = f"\nEmail: {self.email}; " if self.email is not None else ""
+        birthday = f"\nBirthday: {self.birthday}; " if self.birthday else ""
+        address = f"\nAddress: {self.address}; " if self.address else ""
+        email = f"\nEmail: {self.email}; " if self.email else ""
         return (f"Contact name: {self.name.value}; "
                 f"{phones}" +
                 f"{birthday}" +

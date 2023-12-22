@@ -1,11 +1,20 @@
+
+from rich.console import Console
+from rich.columns import Columns
+from rich.panel import Panel
+
 from cli.models.address_book import AddressBook
+from cli.models.note import Note
 from cli.models.notebook import Notebook
 
-from cli.services.address_book_service import add_contact, change_contact, get_phone, get_all_contacts, add_birthday, \
-    show_birthday, search, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
-    add_email, add_address, add_phone
+from cli.services.address_book_service import add_contact, change_contact, get_phone, add_birthday, \
+    show_birthday, delete_contact, change_birthday, change_email, change_name, get_birthdays, \
+    add_email, add_address, add_phone, get_all_contacts_object, get_contacts_content, change_address
 from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.services.notebook_service import add_note, get_all_notes, edit_note, delete_note
+from cli.services.input_helper import prompt_handler, print_hello, progress_bar, rich_console, rich_console_error
+from cli.services.notebook_service import add_note, edit_note, delete_note, get_all_notes_object, \
+    get_notes_content, add_tag, delete_tag
+from cli.services.search_service import search
 
 from cli.utils.helpers import parse_input
 
@@ -13,97 +22,90 @@ from cli.utils.helpers import parse_input
 def main():
     book = AddressBook()
     notebook = Notebook()
+    console = Console()
     book_from_file = read_data_from_file("book.pkl")
     notebook_from_file = read_data_from_file("notebook.pkl")
 
     if book_from_file is not None:
         book = book_from_file
+
     if notebook_from_file is not None:
         notebook = notebook_from_file
+        Note.counter = len(notebook) + 1
 
-    print("Welcome to the assistant bot!")
-    print("""
-        Command list:
-        'hello' - shows hello message
-        ---
-        'add <name>' - adds a new contact. Arguments birthday, address and email are not required.
-        'add-phone <name> <phone>' - adds a new phone number
-        'add-email <name> <email>' - adds an email
-        'add-address <name> <address>' - adds an address
-        'add-birthday <name> <birthday_date>' - adds a birthday
-        ---
-        'change <name> <old_phone> <phone>' - changes a phone number in the contact
-        'change-birthday <name> <new_birthday_date>' - change birthday, format of date <dd.mm.YYYY>
-        'change-name <name> <new_name>' - change name
-        'change-email <name> <mail>' - change email
-        ---
-        'phone <name>' - get all phone numbers in the contact
-        'all' - get all contacts
-        'show-birthday <name>' - shows a birthday
-        'birthdays <days_in_advance>' - shows all birthdays in the next days in advance. <days_in_advance> is not required.
-        ---
-        'search <search_query>' - for searching information in the contact
-        'delete <name>' - delete contact from the contact
-        ---
-        'add-note <title>' - adds a new note.
-        'edit-note <id>' - edits an existing note. If you want to get ID use 'all-notes' command.
-        'delete-note <id>' - deletes a note.
-        'all-notes' - lists all notes.
-        ---
-        'add-tag <id> <title>' - adds a new tag to a note.
-        'delete-tag <id> <title>' - deletes a tag from a note.
-        ---
-        'exit' or 'close' - closes the app
-    """)
+    print_hello()
+
     while True:
-        user_input = input("Enter a command: ")
+        user_input = prompt_handler("Enter a command: ")
         command, *args = parse_input(user_input)
 
+        progress_bar()
+
         if command in ["close", "exit"]:
-            print("Good bye!")
+            rich_console("Good bye!")
             break
         elif command == "hello":
-            print("Hi! How can I help you?")
+            rich_console("Hi! How can I help you?")
+        elif command == "help":
+            print_hello()
         elif command == "add":
-            print(add_contact(args, book=book))
+            rich_console(add_contact(args, book=book))
         elif command == "add-phone":
-            print(add_phone(args, book=book))
+            rich_console(add_phone(args, book=book))
         elif command == "add-birthday":
-            print(add_birthday(args, book=book))
+            rich_console(add_birthday(args, book=book))
         elif command == "add-address":
-            print(add_address(args, book=book))
+            rich_console(add_address(args, book=book))
         elif command == "add-email":
-            print(add_email(args, book=book))
-        elif command == "change":
-            print(change_contact(args, book=book))
-        elif command == "phone":
-            print(get_phone(args, book=book))
-        elif command == "all":
-            print(get_all_contacts(book))
-        elif command == "show-birthday":
-            print(show_birthday(args, book=book))
-        elif command == "birthdays":
-            print(get_birthdays(book=book, days_in_advance=args[0] if args else None))
-        elif command == "search":
-            print(search(args, book=book))
-        elif command == "delete":
-            print(delete_contact(args, book=book))
-        elif command == "change-birthday":
-            print(change_birthday(args, book=book))
-        elif command == "change-email":
-            print(change_email(args, book=book))
-        elif command == "change-name":
-            print(change_name(args, book=book))
+            rich_console(add_email(args, book=book))
         elif command == "add-note":
-            print(add_note(args, notebook=notebook))
-        elif command == "all-notes":
-            print(get_all_notes(notebook=notebook))
+            rich_console(add_note(args, notebook=notebook))
+        elif command == "change":
+            rich_console(change_contact(args, book=book))
+        elif command == "change-birthday":
+            rich_console(change_birthday(args, book=book))
+        elif command == "change-email":
+            rich_console(change_email(args, book=book))
+        elif command == "change-name":
+            rich_console(change_name(args, book=book))
+        elif command == "change-address":
+            rich_console(change_address(args, book=book))
         elif command == "edit-note":
-            print(edit_note(args, notebook=notebook))
+            rich_console(edit_note(args, notebook=notebook))
+        elif command == "delete":
+            rich_console(delete_contact(args, book=book))
         elif command == "delete-note":
-            print(delete_note(args, notebook=notebook))
+            rich_console(delete_note(args, notebook=notebook))
+        elif command == "all":
+            users = get_all_contacts_object(book)
+            user_renderables = [Panel(get_contacts_content(user), expand=True) for user in users]
+            if user_renderables:
+                console.print(Columns(user_renderables))
+            else:
+                console.print("Contact book is empty.")
+        elif command == "all-notes":
+            notes = get_all_notes_object(notebook)
+            note_renderables = [Panel(get_notes_content(note), expand=True) for note in notes]
+            if note_renderables:
+                console.print(Columns(note_renderables, equal=True, expand=True))
+            else:
+                console.print("Notebook is empty.")
+        elif command == "show-birthday":
+            rich_console(show_birthday(args, book=book))
+        elif command == "birthdays":
+            rich_console(get_birthdays(book=book, days_in_advance=args[0] if args else None))
+        elif command == "phone":
+            rich_console(get_phone(args, book=book))
+        elif command == "search":
+            rich_console(search(args, entry=book))
+        elif command == "search-note":
+            rich_console(search(args, entry=notebook))
+        elif command == "add-tag":
+            rich_console(add_tag(args, notebook=notebook))
+        elif command == "delete-tag":
+            rich_console(delete_tag(args, notebook=notebook))
         else:
-            print("Invalid command.")
+            rich_console_error("Invalid command.")
 
         write_data_to_file("book.pkl", book)
         write_data_to_file("notebook.pkl", notebook)

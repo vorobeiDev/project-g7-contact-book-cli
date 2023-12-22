@@ -1,13 +1,16 @@
+from prompt_toolkit.shortcuts import yes_no_dialog
+
 from datetime import datetime, date
 from collections import defaultdict
 
 from cli.models.address_book import AddressBook
+from cli.services.input_helper import answer_prompt_handler
 from cli.utils.constants import WEEKDAYS, BIRTHDAYS_DATE_FORMAT
 from cli.exceptions.error_handler import error_handler
 from cli.exceptions.errors import ContactNotFoundError, IncorrectArgumentsQuantityError, ContactsAreEmptyError, \
-    SearchParamAreIncorrectError, NoMatchesFoundError, ContactIsAlreadyExistsError, ContactNotFoundAddressBook
+     ContactIsAlreadyExistsError, ContactNotFoundAddressBook
 from cli.models.record import Record
-from cli.utils.helpers import is_match, parse_question_input
+from cli.utils.helpers import parse_question_input
 
 
 @error_handler
@@ -26,7 +29,7 @@ def add_contact(args, book: AddressBook):
     new_contact = Record(name=name)
 
     for key in contact_information:
-        user_input = input(f"Do you want to add a {key}? (n/no - for skip): ")
+        user_input = answer_prompt_handler(f"Do you want to add a {key}? (n/no - for skip): ")
         args = parse_question_input(user_input)
 
         if args[0].lower() in ["n", "no"]:
@@ -101,6 +104,18 @@ def change_email(args, book: AddressBook):
 
 
 @error_handler
+def change_address(args, book: AddressBook):
+    if len(args) != 2:
+        raise IncorrectArgumentsQuantityError("Use 'change-address <name> <new address>' command for changing address.")
+    name, address = args
+    contact = book.find(name=name)
+    if contact is None:
+        raise ContactNotFoundError
+    contact.change_address(address)
+    return f"Address for {name} was changed."
+
+
+@error_handler
 def get_phone(args, book: AddressBook):
     if len(args) != 1:
         raise IncorrectArgumentsQuantityError("To get the user's phone number please use 'phone <name>' command.")
@@ -114,11 +129,56 @@ def get_phone(args, book: AddressBook):
 
 
 @error_handler
+def get_all_contacts_object(book: AddressBook):
+    records = book.find_all()
+    return records
+
+
+@error_handler
 def get_all_contacts(book: AddressBook):
     records = book.find_all()
     if len(records) == 0:
         raise ContactsAreEmptyError
     return "\n".join([str(record) for _, record in records])
+
+
+@error_handler
+def get_contacts_content(contact):
+    """Extract text from user dict."""
+    key, value = contact  # Unpack the tuple into key and value variables
+    value = str(value)
+    # Split the value string based on the delimiter ';'
+    parts = value.split(';')
+    
+    # Initialize variables to store extracted keys and values
+    contact_name = None
+    phones = None
+    birthday = None
+    email = None
+    address = None
+
+    for part in parts:
+        # Split each part into key and value based on the ':'
+        key_value = part.split(':')
+        
+        # Clean up whitespace and assign the key-value pairs accordingly
+        if len(key_value) == 2:
+            key = key_value[0].strip()
+            val = key_value[1].strip()
+
+            if key == 'Contact name':
+                contact_name = val
+            elif key == 'Phones':
+                phones = val
+            elif key == 'Birthday':
+                birthday = val
+            elif key == 'Email':
+                email = val
+            elif key == 'Address':
+                address = val
+
+    # Print or use the extracted keys and values
+    return f"[b]{contact_name}[/b]\n[white]Phones: [yellow]{phones}\n[white]Email: [yellow]{email}\n[white]Birthday: [yellow]{birthday}\n[white]Address: [yellow]{address}"
 
 
 @error_handler
@@ -223,29 +283,17 @@ def get_birthdays(book: AddressBook, days_in_advance = None):
 
 
 @error_handler
-def search(args, book: AddressBook):
-    records = book.find_all()
-
-    if len(records) == 0:
-        raise ContactsAreEmptyError
-
-    if len(args) != 1:
-        raise SearchParamAreIncorrectError
-
-    query = args[0].lower()
-    result = {record for name, record in records if is_match(record, query)}
-
-    if len(result) == 0:
-        raise NoMatchesFoundError
-
-    return '\n'.join(str(record) for record in result)
-
-
-@error_handler
 def delete_contact(args, book: AddressBook):
     name = args[0]
-    # TODO: Add input with question "Do you want to delete contact? (yes/no)"
-    if name in book.keys():
-        book.delete(name)
-        return f"Contact {name} was deleted!"
-    raise ContactNotFoundAddressBook
+
+    result = yes_no_dialog(
+        title="Delete contact",
+        text="Do you want to delete contact?").run()
+
+    if result:
+        if name in book.keys():
+            book.delete(name)
+            return f"Contact {name} was deleted!"
+        raise ContactNotFoundAddressBook
+    else:
+        return f"Contact {name} doesn't deleted!"
