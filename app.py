@@ -50,6 +50,9 @@ def main():
         'delete-note <id>' - deletes a note.
         'all-notes' - lists all notes.
         ---
+        'add-tag <id> <title>' - adds a new tag to a note.
+        'delete-tag <id> <title>' - deletes a tag from a note.
+        ---
         'exit' or 'close' - closes the app
     """)
     while True:

@@ -109,8 +109,14 @@ app/g7cli.exe
     2. **Example**: `delete-note 1`
 18. Displaying all notes
     1. **Command**: `list-notes`
-19. Exiting the program
-20. Use any of the following **commands:** `exit, close`
+19. Adding a new tag to a note
+    1. **Command**: `add-tag <id> <title>`
+    2. **Example**: `add-tag 1 dog`
+20. Deleting a tag from a note
+    1. **Command**: `delete-tag <id> <title>`
+    2. **Example**: `delete-tag 1 dog`
+21. Exiting the program
+22. Use any of the following **commands:** `exit, close`
 
 ## Additional Information
 The program automatically saves your contacts in book.pkl and notes in notebook.pkl for future use.
