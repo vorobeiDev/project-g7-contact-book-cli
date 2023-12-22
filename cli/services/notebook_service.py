@@ -42,6 +42,28 @@ def get_all_notes(notebook: Notebook):
 
 
 @error_handler
+def get_all_notes_object(notebook: Notebook):
+    notes = notebook.find_all()
+    return notes
+
+
+@error_handler
+def get_notes_content(note):
+    """Extract text from user dict."""
+    key, value = note
+    value = str(value)
+
+    parts = value.split(';')
+
+    for part in parts:
+        # Split each part into key and value based on the ':'
+        key_value = part.split(':')
+        
+    # Print or use the extracted keys and values
+    return f"[b]{key_value[0]}[/b]\n[white]Title: [yellow]{key_value[1]}\n[white]Description: [yellow]{key_value[2]}"
+
+
+@error_handler
 def edit_note(args, notebook: Notebook):
     if len(args) != 1:
         raise IncorrectArgumentsQuantityError("To edit a note, use 'edit-note <id>' command.")
