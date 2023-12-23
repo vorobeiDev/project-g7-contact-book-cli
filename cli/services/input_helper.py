@@ -26,7 +26,7 @@ def rich_console_warning(text, style="yellow"):
     console.print(Panel(text, expand=True), style=style)
 
 
-def rich_console_table(text, style="green"):
+def rich_console_table(text):
     console = Console()
     console.print(Columns(text, equal=True))
 
@@ -63,7 +63,8 @@ def print_hello():
     table.add_row("all", "", "get all contacts")
     table.add_row("phone", "<name>", "get all phone numbers in the contact")
     table.add_row("birthday", "<name>", "show a birthday")
-    table.add_row("birthdays", "<days_in_advance>", "show all birthdays in the next days in advance. <days_in_advance> is not required")
+    table.add_row("birthdays", "<days_in_advance>", "show all birthdays in "
+                                                    "the next days in advance. <days_in_advance> is not required")
     table.add_row()
 
     table.add_row("search", "<search_query>", "for searching information in the contact")
@@ -71,7 +72,8 @@ def print_hello():
     table.add_row()
 
     table.add_row("add-note", "", "add a new note")
-    table.add_row("change-note", "<id>", "edit an existing note. If you want to get ID use 'all-notes' command")
+    table.add_row("change-note", "<id>", "edit an existing note."
+                                         " If you want to get ID use 'all-notes' command")
     table.add_row("delete-note", "<id>", "delete a note")
     table.add_row("all-notes", "", "list all notes")
     table.add_row()

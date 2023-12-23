@@ -89,8 +89,8 @@ app/g7cli.exe
     1. **Command:** `delete <name>`
     2. **Example:** `delete UserName`
 13. Adding a note
-    1. **Command:** `add-note <title>`
-    2. **Example:** `add-note reminding`
+    1. **Command:** `add-note`
+    2. **Example:** `add-note`
 14. Editing a note
     1. **Command:** `change-note <id>`
     2. **Example:** `change-note 1`
@@ -98,12 +98,12 @@ app/g7cli.exe
     1. **Command**: `delete-note <id>`
     2. **Example**: `delete-note 1`
 16. Displaying all notes
-    1. **Command**: `list-notes`
+    1. **Command**: `all-notes`
 17. Adding a new tag to a note
-    1. **Command**: `add-tag <id> <title>`
+    1. **Command**: `add-tag <id>`
     2. **Example**: `add-tag 1 dog`
 18. Deleting a tag from a note
-    1. **Command**: `delete-tag <id> <title>`
+    1. **Command**: `delete-tag <id>`
     2. **Example**: `delete-tag 1 dog`
 19. Exiting the program
 20. Use any of the following **commands:** `exit, close`

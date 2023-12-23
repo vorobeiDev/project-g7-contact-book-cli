@@ -4,7 +4,8 @@ from cli.models.notebook import Notebook
 from cli.services.command_service import command_service
 
 from cli.services.file_service import write_data_to_file, read_data_from_file
-from cli.services.input_helper import prompt_handler, print_hello, progress_bar, rich_console, rich_console_error
+from cli.services.input_helper import prompt_handler, print_hello, \
+    progress_bar, rich_console, rich_console_error
 
 from cli.utils.helpers import parse_input
 
@@ -33,12 +34,13 @@ def main():
         user_input = prompt_handler("Enter a command: ")
         command, *args = parse_input(user_input)
 
-        # progress_bar()
+        progress_bar()
 
         if command in ["close", "exit"]:
             rich_console("Good bye!")
             break
-        elif command == "hello":
+
+        if command == "hello":
             rich_console("Hi! How can I help you?")
         elif command == "help":
             print_hello()
