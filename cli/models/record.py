@@ -56,20 +56,20 @@ class Record:
         self.address = Address(new_address)
 
     def change_birthday(self, new_birthday):
-       self.birthday = Birthday(new_birthday)
+        self.birthday = Birthday(new_birthday)
 
     def __str__(self):
-        phones = f"\nPhones: {', '.join(p.value for p in self.phones)}; " if len(self.phones) > 0 else ""
-        birthday = f"\nBirthday: {self.birthday}; " if self.birthday else ""
-        address = f"\nAddress: {self.address}; " if self.address else ""
-        email = f"\nEmail: {self.email}; " if self.email else ""
-        return (f"Contact name: {self.name.value}; "
-                f"{phones}" +
-                f"{birthday}" +
-                f"{address}" +
-                f"{email}"
-                "\n"
-                )
+        phones = f"\n[white]Phones: [yellow]{', '.join(p.value for p in self.phones)}; " if len(self.phones) > 0 else ""
+        birthday = f"\n[white]Birthday: [yellow]{self.birthday}; " if self.birthday else ""
+        address = f"\n[white]Address: [yellow]{self.address}; " if self.address else ""
+        email = f"\n[white]Email: [yellow]{self.email}; " if self.email else ""
+        return (
+            f"[white]Contact name: [yellow]{self.name.value}; "
+            f"{phones}" +
+            f"{birthday}" +
+            f"{address}" +
+            f"{email}"
+        )
 
     def __repr__(self):
         return self.__str__()

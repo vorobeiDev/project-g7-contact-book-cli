@@ -78,8 +78,8 @@ app/g7cli.exe
 8. List all contacts
    1. **Command:** `all`
 9. Displaying a contact's birthday
-   1. **Command:** `show-birthday <name>`
-   2. **Example:** `show-birthday John Doe`
+   1. **Command:** `birthday <name>`
+   2. **Example:** `birthday John Doe`
 10. Displaying birthdays for in the next days in advance
     1. **Command:** `birthdays <days_in_advance>`
 11. Searching for contacts
@@ -89,27 +89,24 @@ app/g7cli.exe
     1. **Command:** `delete <name>`
     2. **Example:** `delete UserName`
 13. Adding a note
-    1. **Command:** `add-note <title>`
-    2. **Example:** `add-note reminding`
-14. Adding a note
-    1. **Command:** `add-note <title>`
-    2. **Example:** `add-note reminding`
-15. Editing a note
-    1. **Command:** `edit-note <id>`
-    2. **Example:** `edit-note 1`
-16. Deleting a note
+    1. **Command:** `add-note`
+    2. **Example:** `add-note`
+14. Editing a note
+    1. **Command:** `change-note <id>`
+    2. **Example:** `change-note 1`
+15. Deleting a note
     1. **Command**: `delete-note <id>`
     2. **Example**: `delete-note 1`
-17. Displaying all notes
-    1. **Command**: `list-notes`
-18. Adding a new tag to a note
-    1. **Command**: `add-tag <id> <title>`
+16. Displaying all notes
+    1. **Command**: `all-notes`
+17. Adding a new tag to a note
+    1. **Command**: `add-tag <id>`
     2. **Example**: `add-tag 1 dog`
-19. Deleting a tag from a note
-    1. **Command**: `delete-tag <id> <title>`
+18. Deleting a tag from a note
+    1. **Command**: `delete-tag <id>`
     2. **Example**: `delete-tag 1 dog`
-20. Exiting the program
-21. Use any of the following **commands:** `exit, close`
+19. Exiting the program
+20. Use any of the following **commands:** `exit, close`
 
 ## Additional Information
 The program automatically saves your contacts in book.pkl and notes in notebook.pkl for future use.

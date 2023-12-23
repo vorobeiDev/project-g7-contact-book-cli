@@ -53,7 +53,7 @@ class Birthday(Field):
         if self.validate(value):
             super().__init__(value)
         else:
-            raise BirthdayValidationError(f"Incorrect birthday date. Correct format is {BIRTHDAYS_DATE_FORMAT}")
+            raise BirthdayValidationError(f"Incorrect birthday date. Correct format is DD.MM.YYYY")
 
     @staticmethod
     def validate(date):

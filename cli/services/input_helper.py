@@ -1,4 +1,6 @@
 from time import sleep
+
+from rich.columns import Columns
 from rich.table import Table
 from rich.panel import Panel
 from rich.console import Console
@@ -18,15 +20,21 @@ def rich_console_error(text, style="red"):
     console.print(Panel(text, expand=True), style=style)
 
 
-def warning_console_error(text, style="yellow"):
+def rich_console_warning(text, style="yellow"):
     console = Console()
-    text = "⚠️  " + str(text)
+    text = "🚨   " + str(text)
     console.print(Panel(text, expand=True), style=style)
+
+
+def rich_console_table(text):
+    console = Console()
+    console.print(Columns(text, equal=True))
 
 
 def rich_console(text, style="green"):
     console = Console()
-    console.print(text, style=style)
+    text = "✅   " + str(text)
+    console.print(Panel(text, expand=True), style=style)
 
 
 def print_hello():
@@ -52,24 +60,26 @@ def print_hello():
     table.add_row("delete", "<name>", "delete contact from the contact")
     table.add_row()
 
-    table.add_row("phone", "<name>", "get all phone numbers in the contact")
     table.add_row("all", "", "get all contacts")
-    table.add_row("show-birthday", "<name>", "show a birthday")
-    table.add_row("birthdays", "<days_in_advance>", "show all birthdays in the next days in advance. <days_in_advance> is not required")
+    table.add_row("phone", "<name>", "get all phone numbers in the contact")
+    table.add_row("birthday", "<name>", "show a birthday")
+    table.add_row("birthdays", "<days_in_advance>", "show all birthdays in "
+                                                    "the next days in advance. <days_in_advance> is not required")
     table.add_row()
 
     table.add_row("search", "<search_query>", "for searching information in the contact")
     table.add_row("search-note", "<search_query>", "for searching information in the notes")
     table.add_row()
 
-    table.add_row("add-note", "<title>", "add a new note")
-    table.add_row("edit-note", "<id>", "edit an existing note. If you want to get ID use 'all-notes' command")
+    table.add_row("add-note", "", "add a new note")
+    table.add_row("change-note", "<id>", "edit an existing note."
+                                         " If you want to get ID use 'all-notes' command")
     table.add_row("delete-note", "<id>", "delete a note")
     table.add_row("all-notes", "", "list all notes")
     table.add_row()
 
-    table.add_row("add-tag", "<id> <new_tag_name>", "add a new tag to the existing note with ID")
-    table.add_row("delete-tag", "<id> <tag_name>", "delete a new tag to the existing note with ID")
+    table.add_row("add-tag", "<note_id>", "add a new tag to the existing note with <note_id>")
+    table.add_row("delete-tag", "<note_id>", "delete a tag from the existing note with <note_id>")
 
     table.add_row("exit or close", "", "closes the app")
 
@@ -90,16 +100,16 @@ completer = NestedCompleter.from_nested_dict({
     "change": {"<name>"},
     "phone": {"<name>"},
     "all": None,
-    "show-birthday": {"<name>"},
+    "birthday": {"<name>"},
     "birthdays": {"<days_in_advance>"},
     "search": {"<search_query>"},
     "search-note": {"<search_query>"},
     "delete": {"<name>"},
-    "add-note": {"<title>"},
-    "edit-note": {"<id>"},
+    "add-note": None,
+    "change-note": {"<id>"},
     "delete-note": {"<id>"},
-    "add-tag": {"<id> <new_tag_name>"},
-    "delete-tag": {"<id> <tag_name>"},
+    "add-tag": {"<id>"},
+    "delete-tag": {"<id>"},
     "all-notes": None,
 })
 
