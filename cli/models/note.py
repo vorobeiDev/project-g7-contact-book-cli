@@ -21,21 +21,29 @@ class Note:
         return dict(self)
 
     def __str__(self):
-        tags_str = f"Tags: {', '.join(map(str, self.tags))}" if self.tags else ""
-        return f"ID: {self.id}; Title: {self.title}; Description: {self.description}; {tags_str}"
+        title = f"\n[white]Title: [yellow]{self.title}" if self.title else ""
+        description = f"\n[white]Description: [yellow]{self.description}" if self.description else ""
+        tags = f"\n[white]Tags: [yellow]{', '.join(map(str, self.tags))}" if self.tags else ""
+        return (
+            f"[white]ID: [yellow]{self.id}"
+            f"{title}"
+            f"{description}"
+            f"{tags}"
+        )
 
     def add_description(self, description):
         self.description = Description(description)
 
-    def edit_description(self, new_description):
+    def change_description(self, new_description):
         self.description = Description(new_description)
 
-    def edit_title(self, new_title):
+    def change_title(self, new_title):
         self.title = Title(new_title)
 
     def add_tag(self, tag):
         self.tags.append(Tag(tag))
 
-    def delete_tag(self, tag):
-        if tag in self.tags:
-            self.tags.remove(tag)
+    def delete_tag(self, tag_to_remove):
+        for tag in self.tags:
+            if tag.value == tag_to_remove:
+                self.tags.remove(tag)
