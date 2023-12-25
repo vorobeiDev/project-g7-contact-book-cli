@@ -42,7 +42,7 @@ pip install -r requirements.txt
    python app.py
    ```
 
-### Crate build and run .exe file:
+### Crate build and run .exe file for Windows:
 1. Run command:
 ```shell
 python setup.py build
@@ -52,6 +52,18 @@ python setup.py build
 ```shell
 app/g7cli.exe
 ```
+
+### Crate build and run .exe file for macOS:
+1. Run command:
+```shell
+python setup.py bdist_mac
+```
+2. Open folder /app.
+3. Run file g7cli:
+```shell
+app/g7cli.exec
+```
+
 
 ## Commands
 1. Adding a new contact
