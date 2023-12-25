@@ -53,7 +53,7 @@ python setup.py build
 app/g7cli.exe
 ```
 
-### Crate build and run .exe file for macOS:
+### Crate build and run file for macOS:
 1. Run command:
 ```shell
 python setup.py bdist_mac
