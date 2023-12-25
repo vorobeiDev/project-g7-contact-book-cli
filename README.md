@@ -35,7 +35,7 @@ python -m venv /path/to/new/virtual/environment
 pip install -r requirements.txt
 ```
 
-## Step 2. Run the program or create .exe file:
+## Step 2. Run the program or create executable file:
 
 ### Run python script:
    ```shell
